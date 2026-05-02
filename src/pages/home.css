@@ -1,0 +1,346 @@
+.homeWrap {
+  background: #f6efe8;
+  min-height: 100vh;
+}
+
+.hero {
+  padding: 40px 20px;
+}
+
+.heroCard {
+  max-width: 1000px;
+  margin: auto;
+  background: #efe5dc;
+  border-radius: 24px;
+  padding: 30px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.heroText h1 {
+  font-size: 34px;
+  color: #2e241d;
+}
+
+.heroText h1 span {
+  color: #9c9b8c;
+}
+
+.sub {
+  margin: 14px 0;
+  color: #5a4a3f;
+}
+
+.heroBtns {
+  display: flex;
+  gap: 12px;
+}
+
+.btnPrimary {
+  background: #c9a24d;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 20px;
+  text-decoration: none;
+}
+
+.btnGhost {
+  background: white;
+  padding: 10px 18px;
+  border-radius: 20px;
+  text-decoration: none;
+  color: #2e241d;
+}
+
+.heroCircleWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.heroCircle {
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: #f6efe8;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.heroCircle img {
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+/* ===== Categories Section (مثل الصورة) ===== */
+.catsSection{
+  max-width: 1050px;
+  margin: 28px auto 0;
+  padding: 0 20px 20px;
+}
+
+.catsHeader{
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.catsTag{
+  display:inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(0,0,0,0.06);
+  letter-spacing: 2px;
+  font-size: 11px;
+  color:#6b5a4c;
+  margin: 0 0 10px;
+}
+
+.catsTitle{
+  margin: 0;
+  color:#2e241d;
+  font-size: 26px;
+}
+
+.catsSub{
+  margin: 8px 0 0;
+  color:#6b5a4c;
+}
+
+.catsGrid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.catCard{
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  height: 210px;
+  display: block;
+  text-decoration: none;
+  box-shadow: 0 18px 35px rgba(0,0,0,0.10);
+  border: 1px solid rgba(0,0,0,0.06);
+  background: #fff;
+  transition: transform 0.25s ease;
+}
+
+.catCard:hover{
+  transform: translateY(-4px);
+}
+
+.catCard img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display:block;
+  filter: saturate(0.95);
+}
+
+.catCircle{
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 70px;
+  height: 70px;
+  border-radius: 25%;
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(6px);
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.catCircle h4{
+  margin: 0;
+  color:#2e241d;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.catCircle span{
+  margin-top: 6px;
+  font-size: 12px;
+  color:#6b5a4c;
+}
+
+/* Responsive */
+@media (max-width: 900px){
+  .catsGrid{ grid-template-columns: 1fr; }
+  .catCard{ height: 220px; }
+}
+/* ===== Connected Square Categories (مثل الصورة) ===== */
+.catsSection{
+  max-width: 1050px;
+  margin: 44px auto 0;
+  padding: 0 20px 30px;
+}
+
+.catsHeader{
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.catsTag{
+  display:inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.65);
+  border: 1px solid rgba(0,0,0,0.06);
+  letter-spacing: 2px;
+  font-size: 11px;
+  color:#6b5a4c;
+  margin: 0 0 10px;
+}
+
+.catsTitle{
+  margin: 0;
+  color:#2e241d;
+  font-size: 26px;
+}
+
+.catsSub{
+  margin: 8px 0 0;
+  color:#6b5a4c;
+}
+
+/* ✅ صف واحد بالوسط + متلاصق */
+.catsRow{
+  width: fit-content;          /* يخليهم يتوسّطوا */
+  margin: 18px auto 0;         /* وسط الصفحة */
+  display: flex;
+  gap: 0;                      /* 🔥 متصلات بدون فراغات */
+  border-radius: 16px;
+  overflow: hidden;            /* 🔥 يخفي الزوايد ويخليها كتلة وحدة */
+  box-shadow: 0 18px 35px rgba(0,0,0,0.10);
+  border: 1px solid rgba(0,0,0,0.06);
+  background: #fff;
+}
+
+/* ✅ كل كرت مربع */
+.catCard{
+  position: relative;
+  width: 240px;                /* حجم قريب للصورة */
+  aspect-ratio: 1 / 1;         /* مربع */
+  display: block;
+  text-decoration: none;
+  overflow: hidden;
+  background: #fff;
+}
+
+.catCard + .catCard{
+  border-left: 1px solid rgba(255,255,255,0.55); /* خط خفيف بينهم مثل الصورة */
+}
+
+.catCard img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display:block;
+  filter: saturate(0.95);
+  transform: scale(1.02);
+}
+
+/* ✅ دائرة في الوسط تمامًا */
+.catCircle{
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(6px);
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.catCircle h4{
+  margin: 0;
+  color:#2e241d;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.catCircle span{
+  margin-top: 6px;
+  font-size: 12px;
+  color:#6b5a4c;
+}
+
+/* Hover بسيط مثل ستايل المتاجر */
+.catCard:hover img{
+  transform: scale(1.06);
+  transition: transform 0.35s ease;
+}
+
+/* Responsive: بالموبايل يصيروا تحت بعض */
+@media (max-width: 820px){
+  .catsRow{
+    width: 100%;
+    flex-direction: column;
+  }
+  .catCard{
+    width: 100%;
+  }
+  .catCard + .catCard{
+    border-left: none;
+    border-top: 1px solid rgba(255,255,255,0.6);
+  }
+}
+.catCard{
+  position: relative;
+  width: 240px;
+  aspect-ratio: 1 / 1;
+  display: block;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.catCard::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.18);
+  z-index: 0;
+}
+.catCircle{
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  z-index: 1; /* 🔑 مهم */
+}
+/* ===== Products category background ===== */
+.catProducts{
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* تعتيم خفيف يناسب المنتجات */
+.catProducts::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.15);
+  z-index: 0;
+}
+
+/* الدائرة فوق الخلفية */
+.catProducts .catCircle{
+  z-index: 1;
+}
