@@ -1,1 +1,5 @@
-/* Route-level and shared layout styles can go here. Intentionally minimal. */
+/* App shell — spacing under sticky navbar */
+main {
+  padding-bottom: 8px;
+}
+

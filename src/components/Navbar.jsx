@@ -1,49 +1,75 @@
-import { Link } from "react-router-dom";
-import badge from "../assets/react.svg";
+import { useState } from "react";
+import { NavLink, Link } from "react-router-dom";
+import mayeLogo from "../assets/maye-logo.svg";
+import "./navbar.css";
+
+function navClass({ isActive }) {
+  return "siteNavLink" + (isActive ? " isActive" : "");
+}
 
 export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const closeMenu = () => setMenuOpen(false);
+
   return (
-    <nav style={styles.nav}>
-      <Link to="/" style={styles.brand}>
-        <img src={badge} alt="Logo" style={styles.logo} />
-        <span style={styles.name}>ذوق</span>
+    <nav className="siteNav" aria-label="التنقل الرئيسي">
+      <Link
+        to="/"
+        className="siteNavBrand"
+        onClick={closeMenu}
+        aria-label="ذوق — Maye Clinic، الصفحة الرئيسية"
+      >
+        <img
+          src={mayeLogo}
+          alt=""
+          className="siteNavLogo"
+          width={46}
+          height={46}
+          decoding="async"
+        />
+        <span className="siteNavBrandText">
+          <span className="siteNavName">ذوق</span>
+          <span className="siteNavTag" lang="en">
+            Maye Clinic
+          </span>
+        </span>
       </Link>
 
-      <div style={styles.links}>
-        <Link to="/services" style={styles.link}>الخدمات</Link>
-        <Link to="/booking" style={styles.link}>الحجز</Link>
-        <Link to="/shop" style={styles.link}>المتجر</Link>
-        <Link to="/cart" style={styles.link}>السلة</Link>
+      <button
+        type="button"
+        className="siteNavToggle"
+        aria-expanded={menuOpen}
+        aria-controls="site-nav-links"
+        onClick={() => setMenuOpen((o) => !o)}
+      >
+        {menuOpen ? "✕" : "☰"}
+      </button>
+
+      <div
+        id="site-nav-links"
+        className={`siteNavLinks${menuOpen ? " isOpen" : ""}`}
+      >
+        <NavLink to="/services" className={navClass} end={false} onClick={closeMenu}>
+          الخدمات
+        </NavLink>
+        <NavLink to="/booking" className={navClass} onClick={closeMenu}>
+          الحجز
+        </NavLink>
+        <NavLink to="/shop" className={navClass} onClick={closeMenu}>
+          المتجر
+        </NavLink>
+        <NavLink to="/cart" className={navClass} onClick={closeMenu}>
+          السلة
+        </NavLink>
+        <NavLink
+          to="/admin-login"
+          className={(p) => navClass(p) + " siteNavLink--admin"}
+          onClick={closeMenu}
+        >
+          دخول المشرف
+        </NavLink>
       </div>
     </nav>
   );
 }
-
-const styles = {
-  nav: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "12px 22px",
-    background: "#f6efe8",
-    borderBottom: "1px solid rgba(0,0,0,0.06)",
-  },
-  brand: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    textDecoration: "none",
-  },
-  logo: {
-    width: 44,
-    height: 44,
-    borderRadius: "50%",
-  },
-  name: {
-    fontFamily: "'Aref Ruqaa', serif",
-    fontSize: 28,
-    color: "#9c9b8c",
-  },
-  links: { display: "flex", gap: 16 },
-  link: { textDecoration: "none", color: "#2e241d", fontWeight: 600 },
-};

@@ -1,0 +1,180 @@
+/* Navbar — Maye Clinic */
+
+.siteNav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px clamp(16px, 4vw, 28px);
+  background: rgba(246, 239, 232, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--mc-border);
+  box-shadow: 0 4px 20px rgba(46, 36, 29, 0.04);
+}
+
+.siteNavBrand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+/* Custom Maye logo SVG — crisp at small sizes, no stretch */
+.siteNavLogo {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: contain;
+  border: 2px solid rgba(201, 162, 77, 0.38);
+  box-shadow: var(--mc-shadow-sm);
+  background: var(--mc-surface-soft);
+}
+
+.siteNavBrandText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.siteNavName {
+  font-family: var(--mc-font-display);
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  color: var(--mc-text);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.siteNavTag {
+  font-family: var(--mc-font);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mc-text-subtle);
+  font-weight: 600;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+@media (max-width: 380px) {
+  .siteNavTag {
+    display: none;
+  }
+
+  .siteNavLogo {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+.siteNavToggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--mc-radius-sm);
+  border: 1px solid var(--mc-border);
+  background: var(--mc-surface);
+  cursor: pointer;
+  padding: 0;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--mc-text);
+}
+
+.siteNavToggle:hover {
+  border-color: var(--mc-border-gold);
+}
+
+.siteNavLinks {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  justify-content: flex-end;
+}
+
+.siteNavLinks.isOpen {
+  display: flex;
+}
+
+.siteNavLink {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: var(--mc-radius-pill);
+  text-decoration: none;
+  color: var(--mc-text);
+  font-weight: 600;
+  font-size: 15px;
+  border: 1px solid transparent;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.siteNavLink:hover {
+  background: rgba(201, 162, 77, 0.12);
+  color: var(--mc-text);
+}
+
+.siteNavLink.isActive {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 176, 96, 0.25) 0%,
+    rgba(201, 162, 77, 0.35) 100%
+  );
+  border-color: rgba(201, 162, 77, 0.45);
+  color: var(--mc-text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.siteNavLink--admin {
+  color: var(--mc-text-muted);
+  font-size: 14px;
+}
+
+@media (max-width: 820px) {
+  .siteNavToggle {
+    display: inline-flex;
+  }
+
+  .siteNavLinks {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 16px 18px;
+    background: rgba(253, 251, 248, 0.98);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--mc-border);
+    box-shadow: var(--mc-shadow-md);
+    gap: 4px;
+  }
+
+  .siteNavLinks.isOpen {
+    display: flex;
+  }
+
+  .siteNav {
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .siteNavLinks .siteNavLink {
+    justify-content: center;
+    padding: 12px 16px;
+  }
+}

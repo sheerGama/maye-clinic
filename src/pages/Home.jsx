@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import "./home.css";
 
-import badge from "../assets/react.svg";
-import skinBg from "../assets/react.svg";
-import laserBg from "../assets/react.svg";
-import productsBg from "../assets/react.svg";
+/* Hero + skin category: same modest skincare photo (bundled once) */
+import heroImg from "../assets/skin-bg.jpg";
+/* Category card backgrounds — see REPORT_13 */
+import laserBg from "../assets/laser-bg.jpg";
+import productsBg from "../assets/products-bg.jpg";
 
 export default function Home() {
   return (
@@ -35,7 +36,11 @@ export default function Home() {
 
           <div className="heroCircleWrap">
             <div className="heroCircle">
-              <img src={badge} alt="Maye Clinic" />
+              <img
+                src={heroImg}
+                alt="أجواء عناية بالبشرة — Maye Clinic"
+                className="heroCircleImg"
+              />
             </div>
           </div>
         </div>
@@ -64,7 +69,7 @@ export default function Home() {
           <Link
             className="catCard catSkin"
             to="/services/skin"
-            style={{ backgroundImage: `url(${skinBg})` }}
+            style={{ backgroundImage: `url(${heroImg})` }}
           >
             <div className="catCircle">
               <h4>جلسات البشرة</h4>

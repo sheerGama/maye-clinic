@@ -1,10 +1,11 @@
-/* Booking page — luxury clinic palette (beige, gold, brown, white) */
+/* Booking page — uses theme tokens */
 .bookingPage {
   direction: rtl;
   min-height: 100vh;
-  background: linear-gradient(180deg, #f6efe8 0%, #efe5dc 45%, #f6efe8 100%);
-  padding: 32px 20px 56px;
-  font-family: system-ui, "Segoe UI", Tahoma, sans-serif;
+  background: var(--mc-bg-gradient);
+  padding: var(--mc-space-page-y) var(--mc-space-page-x)
+    clamp(2rem, 5vw, 3.5rem);
+  font-family: var(--mc-font);
 }
 
 .bookingInner {
@@ -21,14 +22,14 @@
   font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #9c8b7a;
+  color: var(--mc-text-subtle);
   margin: 0 0 8px;
 }
 
 .bookingTitle {
-  font-size: 28px;
-  font-weight: 700;
-  color: #2e241d;
+  font-size: clamp(1.5rem, 4vw, 1.75rem);
+  font-weight: 800;
+  color: var(--mc-text);
   margin: 0 0 10px;
   line-height: 1.35;
 }
@@ -36,16 +37,16 @@
 .bookingSubtitle {
   margin: 0;
   font-size: 15px;
-  color: #6b5a4c;
-  line-height: 1.6;
+  color: var(--mc-text-muted);
+  line-height: 1.65;
 }
 
 .bookingCard {
-  background: #fff;
-  border-radius: 20px;
+  background: var(--mc-surface);
+  border-radius: var(--mc-radius-lg);
   padding: 28px 24px 32px;
-  box-shadow: 0 18px 48px rgba(46, 36, 29, 0.08);
-  border: 1px solid rgba(201, 162, 77, 0.22);
+  box-shadow: var(--mc-shadow-md);
+  border: 1px solid var(--mc-border-gold);
 }
 
 .bookingField {
@@ -56,12 +57,12 @@
   display: block;
   font-size: 14px;
   font-weight: 600;
-  color: #2e241d;
+  color: var(--mc-text);
   margin-bottom: 8px;
 }
 
 .bookingField .req {
-  color: #b8860b;
+  color: var(--mc-gold-dark);
   margin-inline-start: 4px;
 }
 
@@ -70,10 +71,10 @@
 .bookingField textarea {
   width: 100%;
   padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(46, 36, 29, 0.15);
-  background: #fdfbf8;
-  color: #2e241d;
+  border-radius: var(--mc-radius-sm);
+  border: 1px solid var(--mc-border-strong);
+  background: var(--mc-surface-soft);
+  color: var(--mc-text);
   font-size: 15px;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -82,8 +83,8 @@
 .bookingField select:focus,
 .bookingField textarea:focus {
   outline: none;
-  border-color: #c9a24d;
-  box-shadow: 0 0 0 3px rgba(201, 162, 77, 0.2);
+  border-color: var(--mc-gold);
+  box-shadow: var(--mc-focus-ring);
 }
 
 .bookingField textarea {
@@ -96,6 +97,7 @@
   margin-top: 6px;
   font-size: 13px;
   color: #a94442;
+  font-weight: 600;
 }
 
 .bookingSubmit {
@@ -104,13 +106,19 @@
   padding: 14px 20px;
   border: none;
   border-radius: 14px;
-  background: linear-gradient(135deg, #d4b060 0%, #c9a24d 50%, #b8923d 100%);
+  background: linear-gradient(
+    135deg,
+    var(--mc-gold-mid) 0%,
+    var(--mc-gold) 50%,
+    var(--mc-gold-dark) 100%
+  );
   color: #fff;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 10px 28px rgba(201, 162, 77, 0.35);
   transition: transform 0.15s, box-shadow 0.15s;
+  font-family: inherit;
 }
 
 .bookingSubmit:hover:not(:disabled) {
@@ -127,9 +135,9 @@
   margin-top: 20px;
   padding: 16px 18px;
   border-radius: 14px;
-  background: rgba(201, 162, 77, 0.12);
-  border: 1px solid rgba(201, 162, 77, 0.45);
-  color: #2e241d;
+  background: var(--mc-success-bg);
+  border: 1px solid var(--mc-success-border);
+  color: var(--mc-text);
   font-size: 15px;
   font-weight: 600;
   text-align: center;
@@ -138,21 +146,21 @@
 .bookingEmpty {
   text-align: center;
   padding: 40px 24px;
-  background: #fff;
-  border-radius: 20px;
-  border: 1px dashed rgba(201, 162, 77, 0.45);
-  box-shadow: 0 12px 36px rgba(46, 36, 29, 0.06);
+  background: var(--mc-surface);
+  border-radius: var(--mc-radius-lg);
+  border: 1px dashed var(--mc-border-gold);
+  box-shadow: var(--mc-shadow-sm);
 }
 
 .bookingEmpty h2 {
   margin: 0 0 12px;
   font-size: 22px;
-  color: #2e241d;
+  color: var(--mc-text);
 }
 
 .bookingEmpty p {
   margin: 0 0 20px;
-  color: #6b5a4c;
+  color: var(--mc-text-muted);
   line-height: 1.65;
   font-size: 15px;
 }
@@ -161,27 +169,28 @@
   display: inline-block;
   padding: 12px 22px;
   border-radius: 14px;
-  background: #c9a24d;
+  background: var(--mc-gold);
   color: #fff;
   font-weight: 600;
   text-decoration: none;
+  transition: background 0.2s;
 }
 
 .bookingEmpty a:hover {
-  background: #b8923d;
+  background: var(--mc-gold-dark);
 }
 
 .bookingLoading {
   text-align: center;
-  color: #6b5a4c;
+  color: var(--mc-text-muted);
   font-size: 16px;
   padding: 40px 16px;
 }
 
 .bookingWarn {
-  background: #fff8e6;
-  border: 1px solid #f0d78c;
-  color: #7a5c00;
+  background: var(--mc-warn-bg);
+  border: 1px solid var(--mc-warn-border);
+  color: var(--mc-warn-text);
   padding: 14px 16px;
   border-radius: 14px;
   margin-bottom: 20px;
@@ -190,21 +199,17 @@
 }
 
 .bookingSubmitError {
-  background: #fdecea;
-  border: 1px solid #f5c6cb;
-  color: #721c24;
+  background: var(--mc-error-bg);
+  border: 1px solid var(--mc-error-border);
+  color: var(--mc-error-text);
   padding: 12px 14px;
-  border-radius: 12px;
+  border-radius: var(--mc-radius-sm);
   margin-bottom: 16px;
   font-size: 14px;
   line-height: 1.5;
 }
 
 @media (max-width: 480px) {
-  .bookingTitle {
-    font-size: 24px;
-  }
-
   .bookingCard {
     padding: 22px 18px 28px;
   }

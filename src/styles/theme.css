@@ -1,0 +1,412 @@
+/**
+ * Maye Clinic — luxury clinic design tokens (RTL-friendly).
+ * Used across pages for consistent beige / gold / brown / white identity.
+ */
+:root {
+  --mc-bg: #f6efe8;
+  --mc-bg-mid: #efe5dc;
+  --mc-bg-gradient: linear-gradient(
+    180deg,
+    #f6efe8 0%,
+    #efe5dc 45%,
+    #f6efe8 100%
+  );
+  --mc-surface: #ffffff;
+  --mc-surface-soft: #fdfbf8;
+  --mc-text: #2e241d;
+  --mc-text-muted: #6b5a4c;
+  --mc-text-subtle: #9c8b7a;
+  --mc-gold: #c9a24d;
+  --mc-gold-mid: #d4b060;
+  --mc-gold-dark: #b8923d;
+  --mc-border: rgba(46, 36, 29, 0.12);
+  --mc-border-strong: rgba(46, 36, 29, 0.18);
+  --mc-border-gold: rgba(201, 162, 77, 0.28);
+  --mc-shadow-sm: 0 8px 28px rgba(46, 36, 29, 0.07);
+  --mc-shadow-md: 0 18px 48px rgba(46, 36, 29, 0.09);
+  --mc-shadow-card: 0 12px 36px rgba(46, 36, 29, 0.08);
+  --mc-radius-sm: 12px;
+  --mc-radius-md: 16px;
+  --mc-radius-lg: 20px;
+  --mc-radius-xl: 24px;
+  --mc-radius-pill: 999px;
+  --mc-font: system-ui, "Segoe UI", Tahoma, sans-serif;
+  --mc-font-display: "Aref Ruqaa", Georgia, serif;
+  --mc-focus-ring: 0 0 0 3px rgba(201, 162, 77, 0.32);
+  --mc-error-bg: #fdecea;
+  --mc-error-border: #f5c6cb;
+  --mc-error-text: #721c24;
+  --mc-warn-bg: #fff8e6;
+  --mc-warn-border: #f0d78c;
+  --mc-warn-text: #7a5c00;
+  --mc-success-bg: rgba(201, 162, 77, 0.12);
+  --mc-success-border: rgba(201, 162, 77, 0.45);
+  --mc-whatsapp: #25d366;
+  --mc-space-page-y: clamp(1.5rem, 4vw, 2.75rem);
+  --mc-space-page-x: clamp(1rem, 4vw, 1.25rem);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--mc-font);
+  color: var(--mc-text);
+  background: var(--mc-bg);
+  line-height: 1.55;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+  width: 100%;
+}
+
+/* Focus visibility — keyboard users */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--mc-gold);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--mc-gold);
+  outline-offset: 2px;
+}
+
+/* Shared layout */
+.mc-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--mc-space-page-y) var(--mc-space-page-x);
+  min-height: 50vh;
+}
+
+.mc-page--wide {
+  max-width: 1140px;
+}
+
+.mc-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mc-text-subtle);
+  margin: 0 0 8px;
+}
+
+.mc-section-title {
+  font-size: clamp(1.5rem, 3vw, 1.75rem);
+  font-weight: 700;
+  color: var(--mc-text);
+  margin: 0 0 12px;
+  line-height: 1.3;
+}
+
+.mc-muted {
+  color: var(--mc-text-muted);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+/* Buttons */
+.mc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--mc-radius-pill);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.mc-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.mc-btn--primary {
+  background: linear-gradient(
+    135deg,
+    var(--mc-gold-mid) 0%,
+    var(--mc-gold) 50%,
+    var(--mc-gold-dark) 100%
+  );
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(201, 162, 77, 0.35);
+}
+
+.mc-btn--primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+  box-shadow: 0 14px 32px rgba(201, 162, 77, 0.42);
+}
+
+.mc-btn--outline {
+  background: var(--mc-surface);
+  color: var(--mc-gold-dark);
+  border-color: rgba(201, 162, 77, 0.55);
+}
+
+.mc-btn--outline:hover:not(:disabled) {
+  background: rgba(201, 162, 77, 0.08);
+}
+
+.mc-btn--ghost {
+  background: var(--mc-surface);
+  color: var(--mc-text);
+  border-color: var(--mc-border);
+  box-shadow: var(--mc-shadow-sm);
+}
+
+.mc-btn--ghost:hover:not(:disabled) {
+  border-color: var(--mc-border-gold);
+}
+
+.mc-btn--danger-text {
+  background: transparent;
+  color: #a94442;
+  border: none;
+  padding: 8px 12px;
+}
+
+/* Alerts */
+.mc-alert {
+  padding: 14px 16px;
+  border-radius: var(--mc-radius-sm);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.mc-alert--error {
+  background: var(--mc-error-bg);
+  border: 1px solid var(--mc-error-border);
+  color: var(--mc-error-text);
+}
+
+.mc-alert--warn {
+  background: var(--mc-warn-bg);
+  border: 1px solid var(--mc-warn-border);
+  color: var(--mc-warn-text);
+}
+
+.mc-alert--info {
+  background: var(--mc-surface-soft);
+  border: 1px solid var(--mc-border);
+  color: var(--mc-text-muted);
+}
+
+/* Loading line */
+.mc-loading {
+  color: var(--mc-text-muted);
+  font-size: 16px;
+  padding: 24px 8px;
+  text-align: center;
+}
+
+.mc-loading--inline {
+  text-align: start;
+  padding: 16px 0;
+}
+
+/* Product / service card grids (Shop + Services) */
+.mc-catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+.mc-catalog-card {
+  background: var(--mc-surface);
+  border-radius: var(--mc-radius-lg);
+  padding: 18px;
+  box-shadow: var(--mc-shadow-card);
+  border: 1px solid var(--mc-border-gold);
+  display: flex;
+  flex-direction: column;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.mc-catalog-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--mc-shadow-md);
+}
+
+.mc-catalog-img-wrap {
+  border-radius: var(--mc-radius-md);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: var(--mc-bg-mid);
+  margin-bottom: 12px;
+}
+
+.mc-catalog-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mc-catalog-card h3 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--mc-text);
+  line-height: 1.35;
+}
+
+.mc-catalog-desc {
+  color: var(--mc-text-muted);
+  font-size: 14px;
+  margin: 0 0 12px;
+  flex: 1;
+  line-height: 1.55;
+}
+
+.mc-catalog-price {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--mc-gold-dark);
+  margin-bottom: 12px;
+}
+
+.mc-catalog-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.mc-btn-block {
+  width: 100%;
+}
+
+.mc-section-heading {
+  font-size: clamp(1.35rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  color: var(--mc-text);
+  margin: 2.5rem 0 1rem;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(201, 162, 77, 0.28);
+}
+
+.mc-section-heading:first-of-type {
+  margin-top: 0;
+}
+
+.mc-page-title {
+  font-size: clamp(1.75rem, 4vw, 2rem);
+  font-weight: 800;
+  color: var(--mc-text);
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+}
+
+/* Shared image gallery modal (Services + Shop) */
+.mc-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(46, 36, 29, 0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+
+.mc-modal {
+  background: var(--mc-surface);
+  padding: 20px;
+  border-radius: var(--mc-radius-lg);
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+  box-shadow: var(--mc-shadow-md);
+  border: 1px solid var(--mc-border-gold);
+}
+
+.mc-modal-close {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--mc-radius-sm);
+  border: 1px solid var(--mc-border);
+  background: var(--mc-surface-soft);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--mc-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mc-modal-close:hover {
+  background: rgba(201, 162, 77, 0.15);
+  border-color: var(--mc-border-gold);
+}
+
+.mc-modal-img {
+  width: 100%;
+  max-height: min(56vh, 420px);
+  object-fit: contain;
+  border-radius: var(--mc-radius-sm);
+  background: var(--mc-bg);
+}
+
+.mc-modal-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  gap: 12px;
+}
+
+.mc-modal-nav button {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: var(--mc-radius-sm);
+  border: 1px solid var(--mc-border);
+  background: var(--mc-surface-soft);
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--mc-text);
+}
+
+.mc-modal-nav button:hover {
+  border-color: var(--mc-gold);
+  background: rgba(201, 162, 77, 0.12);
+}
+
+.mc-modal-nav span {
+  font-size: 14px;
+  color: var(--mc-text-muted);
+  font-weight: 600;
+}

@@ -261,14 +261,14 @@ export default function Checkout() {
               <div className="checkoutSuccessBadge" aria-hidden>
                 ✓
               </div>
-              <h1 className="checkoutTitle" style={{ marginBottom: 8 }}>
+              <h1 className="checkoutTitle">
                 تم استلام طلبك بنجاح
               </h1>
               <p className="checkoutSubtitle">
                 شكراً لثقتك بعيادة Maye Clinic. رقم الطلب الخاص بك:
               </p>
               <div className="checkoutOrderId">{completedOrder.id}</div>
-              <p className="checkoutSubtitle" style={{ marginTop: 16 }}>
+              <p className="checkoutSubtitle checkoutSubtitle--spaced">
                 يمكنك إرسال تفاصيل الطلب عبر واتساب للمتابعة السريعة.
               </p>
               <a

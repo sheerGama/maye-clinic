@@ -20,6 +20,7 @@ import {
   updateOrderStatus,
   mapBookingRow,
 } from "../lib/adminOrdersApi.js";
+import "./admin.css";
 
 const BOOKING_STATUS_OPTIONS = ["جديد", "مؤكد", "مكتمل", "ملغي"];
 const ORDER_STATUS_OPTIONS = ["جديد", "قيد التجهيز", "مكتمل", "ملغي"];
@@ -307,12 +308,12 @@ export default function Admin() {
         : productItems;
 
   return (
-    <div style={styles.page} dir="rtl">
-      <div style={styles.titleRow}>
-        <h1 style={styles.title}>لوحة التحكم – Maye Clinic</h1>
+    <div className="admin-page" dir="rtl">
+      <div className="admin-title-row">
+        <h1 className="admin-title">لوحة التحكم – Maye Clinic</h1>
         <button
           type="button"
-          style={styles.logoutBtn}
+          className="admin-logout-btn"
           onClick={handleLogout}
         >
           تسجيل الخروج
@@ -320,55 +321,55 @@ export default function Admin() {
       </div>
 
       {showLocalFallback && (
-        <div style={styles.warnBanner} role="status">
+        <div className="admin-warn-banner" role="status">
           يتم عرض بيانات الكتالوج من التخزين المحلي فقط لأن الاتصال بقاعدة البيانات
           فشل أو غير متاح.
         </div>
       )}
 
       {showDashboardFallback && (
-        <div style={styles.warnBanner} role="status">
+        <div className="admin-warn-banner" role="status">
           يتم عرض حجوزات الجلسات و/أو طلبات المتجر من النسخ المحلية (إن وُجدت)
           لأن التحميل من السيرفر تعذر. {dashLoadError && ` ${dashLoadError}`}
         </div>
       )}
 
       {writePolicyHint && (
-        <div style={styles.errorBanner} role="alert">
+        <div className="admin-error-banner" role="alert">
           {writePolicyHint}
         </div>
       )}
 
-      <div style={styles.mainTabs}>
+      <div className="admin-main-tabs" role="tablist" aria-label="أقسام لوحة التحكم">
         <button
           type="button"
-          style={{
-            ...styles.mainTab,
-            background: mainView === "catalog" ? "#c9a24d" : "#fff",
-            color: mainView === "catalog" ? "#fff" : "#2e241d",
-          }}
+          role="tab"
+          aria-selected={mainView === "catalog"}
+          className={
+            "admin-main-tab" + (mainView === "catalog" ? " is-active" : "")
+          }
           onClick={() => setMainView("catalog")}
         >
           إدارة الكتالوج
         </button>
         <button
           type="button"
-          style={{
-            ...styles.mainTab,
-            background: mainView === "bookings" ? "#c9a24d" : "#fff",
-            color: mainView === "bookings" ? "#fff" : "#2e241d",
-          }}
+          role="tab"
+          aria-selected={mainView === "bookings"}
+          className={
+            "admin-main-tab" + (mainView === "bookings" ? " is-active" : "")
+          }
           onClick={() => setMainView("bookings")}
         >
           حجوزات الجلسات
         </button>
         <button
           type="button"
-          style={{
-            ...styles.mainTab,
-            background: mainView === "orders" ? "#c9a24d" : "#fff",
-            color: mainView === "orders" ? "#fff" : "#2e241d",
-          }}
+          role="tab"
+          aria-selected={mainView === "orders"}
+          className={
+            "admin-main-tab" + (mainView === "orders" ? " is-active" : "")
+          }
           onClick={() => setMainView("orders")}
         >
           طلبات المتجر
@@ -377,7 +378,7 @@ export default function Admin() {
 
       {mainView === "catalog" && (
         <>
-          <div style={styles.tabs}>
+          <div className="admin-sub-tabs">
             <Tab
               label="جلسات البشرة"
               active={tab === "skin"}
@@ -396,7 +397,7 @@ export default function Admin() {
           </div>
 
           {loading ? (
-            <p style={styles.loading}>جاري تحميل البيانات…</p>
+            <p className="admin-loading">جاري تحميل البيانات…</p>
           ) : (
             <AdminSection
               tabType={tab === "products" ? "products" : "services"}
@@ -435,11 +436,7 @@ function Tab({ label, active, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      style={{
-        ...styles.tab,
-        background: active ? "#c9a24d" : "#fff",
-        color: active ? "#fff" : "#2e241d",
-      }}
+      className={"admin-sub-tab" + (active ? " is-active" : "")}
     >
       {label}
     </button>
@@ -448,53 +445,53 @@ function Tab({ label, active, onClick }) {
 
 function BookingsPanel({ loading, bookings, onStatusChange }) {
   if (loading) {
-    return <p style={styles.loading}>جاري تحميل الحجوزات…</p>;
+    return <p className="admin-loading">جاري تحميل الحجوزات…</p>;
   }
 
   if (bookings.length === 0) {
     return (
-      <div style={styles.dashboardCard}>
-        <h2 style={styles.sectionTitle}>حجوزات الجلسات</h2>
-        <p style={styles.muted}>لا توجد حجوزات لعرضها.</p>
+      <div className="admin-panel">
+        <h2 className="admin-section-title">حجوزات الجلسات</h2>
+        <p className="admin-muted">لا توجد حجوزات لعرضها.</p>
       </div>
     );
   }
 
   return (
-    <div style={styles.dashboardCard}>
-      <h2 style={styles.sectionTitle}>حجوزات الجلسات</h2>
-      <div style={styles.tableScroll}>
-        <table style={styles.table}>
+    <div className="admin-panel">
+      <h2 className="admin-section-title">حجوزات الجلسات</h2>
+      <div className="admin-table-scroll">
+        <table className="admin-table">
           <thead>
             <tr>
-              <th style={styles.th}>الاسم</th>
-              <th style={styles.th}>الهاتف</th>
-              <th style={styles.th}>الخدمة</th>
-              <th style={styles.th}>النوع</th>
-              <th style={styles.th}>التاريخ</th>
-              <th style={styles.th}>الوقت</th>
-              <th style={styles.th}>ملاحظات</th>
-              <th style={styles.th}>الحالة</th>
-              <th style={styles.th}>أُنشئت</th>
+              <th className="admin-th">الاسم</th>
+              <th className="admin-th">الهاتف</th>
+              <th className="admin-th">الخدمة</th>
+              <th className="admin-th">النوع</th>
+              <th className="admin-th">التاريخ</th>
+              <th className="admin-th">الوقت</th>
+              <th className="admin-th">ملاحظات</th>
+              <th className="admin-th">الحالة</th>
+              <th className="admin-th">أُنشئت</th>
             </tr>
           </thead>
           <tbody>
             {bookings.map((b) => (
               <tr key={String(b.id)}>
-                <td style={styles.td}>{b.fullName}</td>
-                <td style={styles.td}>{b.phone}</td>
-                <td style={styles.td}>{b.serviceName}</td>
-                <td style={styles.td}>{b.serviceType}</td>
-                <td style={styles.td}>{b.date ?? "—"}</td>
-                <td style={styles.td}>{b.time ?? "—"}</td>
-                <td style={styles.tdSmall}>{b.notes || "—"}</td>
-                <td style={styles.td}>
+                <td className="admin-td">{b.fullName}</td>
+                <td className="admin-td">{b.phone}</td>
+                <td className="admin-td">{b.serviceName}</td>
+                <td className="admin-td">{b.serviceType}</td>
+                <td className="admin-td">{b.date ?? "—"}</td>
+                <td className="admin-td">{b.time ?? "—"}</td>
+                <td className="admin-td-small">{b.notes || "—"}</td>
+                <td className="admin-td">
                   <select
                     value={b.status}
                     onChange={(e) =>
                       onStatusChange(b.id, e.target.value)
                     }
-                    style={styles.statusSelect}
+                    className="admin-status-select"
                     aria-label="حالة الحجز"
                   >
                     {[
@@ -506,7 +503,7 @@ function BookingsPanel({ loading, bookings, onStatusChange }) {
                     ))}
                   </select>
                 </td>
-                <td style={styles.tdSmall}>{formatDt(b.createdAt)}</td>
+                <td className="admin-td-small">{formatDt(b.createdAt)}</td>
               </tr>
             ))}
           </tbody>
@@ -518,58 +515,58 @@ function BookingsPanel({ loading, bookings, onStatusChange }) {
 
 function OrdersPanel({ loading, orders, onStatusChange }) {
   if (loading) {
-    return <p style={styles.loading}>جاري تحميل الطلبات…</p>;
+    return <p className="admin-loading">جاري تحميل الطلبات…</p>;
   }
 
   if (orders.length === 0) {
     return (
-      <div style={styles.dashboardCard}>
-        <h2 style={styles.sectionTitle}>طلبات المتجر</h2>
-        <p style={styles.muted}>لا توجد طلبات لعرضها.</p>
+      <div className="admin-panel">
+        <h2 className="admin-section-title">طلبات المتجر</h2>
+        <p className="admin-muted">لا توجد طلبات لعرضها.</p>
       </div>
     );
   }
 
   return (
-    <div style={styles.dashboardStack}>
+    <div className="admin-orders-stack">
       {orders.map((order) => (
-        <div key={String(order.id)} style={styles.orderBlock}>
-          <div style={styles.orderHeader}>
+        <div key={String(order.id)} className="admin-order-card">
+          <div className="admin-order-head">
             <strong>طلب #{String(order.id).slice(0, 8)}…</strong>
-            <span style={styles.muted}>{formatDt(order.createdAt)}</span>
+            <span className="admin-muted">{formatDt(order.createdAt)}</span>
           </div>
-          <div style={styles.orderGrid}>
+          <div className="admin-order-grid">
             <div>
-              <span style={styles.label}>الاسم:</span>{" "}
+              <span className="admin-kv-label">الاسم:</span>{" "}
               {order.customer?.fullName}
             </div>
             <div>
-              <span style={styles.label}>الهاتف:</span>{" "}
+              <span className="admin-kv-label">الهاتف:</span>{" "}
               {order.customer?.phone}
             </div>
             <div>
-              <span style={styles.label}>المدينة:</span>{" "}
+              <span className="admin-kv-label">المدينة:</span>{" "}
               {order.customer?.city}
             </div>
             <div>
-              <span style={styles.label}>العنوان:</span>{" "}
+              <span className="admin-kv-label">العنوان:</span>{" "}
               {order.customer?.address}
             </div>
-            <div style={{ gridColumn: "1 / -1" }}>
-              <span style={styles.label}>ملاحظات:</span>{" "}
+            <div className="admin-order-grid-full">
+              <span className="admin-kv-label">ملاحظات:</span>{" "}
               {order.customer?.notes || "—"}
             </div>
             <div>
-              <span style={styles.label}>الإجمالي:</span> {order.total} ₪
+              <span className="admin-kv-label">الإجمالي:</span> {order.total} ₪
             </div>
             <div>
-              <span style={styles.label}>الحالة:</span>{" "}
+              <span className="admin-kv-label">الحالة:</span>{" "}
               <select
                 value={order.status}
                 onChange={(e) =>
                   onStatusChange(order.id, e.target.value)
                 }
-                style={styles.statusSelect}
+                className="admin-status-select"
                 aria-label="حالة الطلب"
               >
                 {[
@@ -582,27 +579,27 @@ function OrdersPanel({ loading, orders, onStatusChange }) {
               </select>
             </div>
           </div>
-          <div style={styles.tableScroll}>
-            <table style={styles.table}>
+          <div className="admin-table-scroll">
+            <table className="admin-table">
               <thead>
                 <tr>
-                  <th style={styles.th}>المنتج</th>
-                  <th style={styles.th}>النوع</th>
-                  <th style={styles.th}>السعر</th>
-                  <th style={styles.th}>الكمية</th>
-                  <th style={styles.th}>المجموع</th>
+                  <th className="admin-th">المنتج</th>
+                  <th className="admin-th">النوع</th>
+                  <th className="admin-th">السعر</th>
+                  <th className="admin-th">الكمية</th>
+                  <th className="admin-th">المجموع</th>
                 </tr>
               </thead>
               <tbody>
                 {(order.items || []).map((it, idx) => (
                   <tr key={it.id ?? idx}>
-                    <td style={styles.td}>{it.name}</td>
-                    <td style={styles.td}>
+                    <td className="admin-td">{it.name}</td>
+                    <td className="admin-td">
                       {it.item_type ?? it.type ?? "—"}
                     </td>
-                    <td style={styles.td}>{it.price} ₪</td>
-                    <td style={styles.td}>{it.quantity}</td>
-                    <td style={styles.td}>
+                    <td className="admin-td">{it.price} ₪</td>
+                    <td className="admin-td">{it.quantity}</td>
+                    <td className="admin-td">
                       {it.line_subtotal ?? it.lineSubtotal} ₪
                     </td>
                   </tr>
@@ -762,25 +759,25 @@ function AdminSection({ tabType, serviceCategory, items, onReload, onRlsHint }) 
   };
 
   return (
-    <div style={styles.card}>
-      <h2 style={styles.sectionTitle}>إدارة العناصر</h2>
+    <div className="admin-editor-card">
+      <h2 className="admin-section-title">إدارة العناصر</h2>
 
-      <div style={styles.form}>
+      <div className="admin-add-form">
         <input
-          style={styles.input}
+          className="admin-input"
           placeholder="الاسم"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <input
-          style={styles.input}
+          className="admin-input"
           placeholder="السعر"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
         />
 
         <textarea
-          style={styles.textarea}
+          className="admin-textarea"
           placeholder="الوصف"
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
@@ -793,31 +790,31 @@ function AdminSection({ tabType, serviceCategory, items, onReload, onRlsHint }) 
           onChange={(e) => handleImages(e.target.files, setImages)}
         />
 
-        <button type="button" style={styles.addBtn} onClick={addItem}>
+        <button type="button" className="admin-btn-add" onClick={addItem}>
           إضافة
         </button>
       </div>
 
       {items.map((item) => (
-        <div key={String(item.id)} style={styles.row}>
+        <div key={String(item.id)} className="admin-item-row">
           {editId === item.id ? (
             <>
               <input
-                style={styles.input}
+                className="admin-input"
                 value={editData.name}
                 onChange={(e) =>
                   setEditData({ ...editData, name: e.target.value })
                 }
               />
               <input
-                style={styles.input}
+                className="admin-input"
                 value={editData.price}
                 onChange={(e) =>
                   setEditData({ ...editData, price: e.target.value })
                 }
               />
               <textarea
-                style={styles.textarea}
+                className="admin-textarea"
                 value={editData.desc}
                 onChange={(e) =>
                   setEditData({ ...editData, desc: e.target.value })
@@ -835,7 +832,7 @@ function AdminSection({ tabType, serviceCategory, items, onReload, onRlsHint }) 
               />
               <button
                 type="button"
-                style={styles.saveBtn}
+                className="admin-btn-save"
                 onClick={saveEdit}
               >
                 حفظ
@@ -843,30 +840,30 @@ function AdminSection({ tabType, serviceCategory, items, onReload, onRlsHint }) 
             </>
           ) : (
             <>
-              <div style={styles.imagesRow}>
+              <div className="admin-thumbs">
                 {(item.images || []).slice(0, 3).map((img, i) => (
-                  <img key={i} src={img} alt="" style={styles.thumb} />
+                  <img key={i} src={img} alt="" className="admin-thumb" />
                 ))}
               </div>
               <div>
                 <strong>{item.name}</strong>
                 {!item.is_active && (
-                  <span style={styles.inactiveBadge}> (معطّل)</span>
+                  <span className="admin-inactive"> (معطّل)</span>
                 )}
                 <div>{item.price} ₪</div>
-                <p style={styles.descText}>{item.desc}</p>
+                <p className="admin-desc">{item.desc}</p>
               </div>
               <div>
                 <button
                   type="button"
-                  style={styles.editBtn}
+                  className="admin-btn-edit"
                   onClick={() => startEdit(item)}
                 >
                   تعديل
                 </button>
                 <button
                   type="button"
-                  style={styles.deleteBtn}
+                  className="admin-btn-delete"
                   onClick={() => removeItem(item.id)}
                 >
                   حذف
@@ -880,205 +877,3 @@ function AdminSection({ tabType, serviceCategory, items, onReload, onRlsHint }) 
   );
 }
 
-/* ================= STYLES ================= */
-
-const styles = {
-  page: { maxWidth: 1100, margin: "40px auto", padding: 20 },
-  titleRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexWrap: "wrap",
-    gap: 12,
-    marginBottom: 20,
-  },
-  title: { margin: 0, color: "#2e241d", flex: "1 1 auto" },
-  logoutBtn: {
-    padding: "10px 18px",
-    borderRadius: 999,
-    border: "1px solid rgba(46, 36, 29, 0.2)",
-    background: "#fff",
-    color: "#2e241d",
-    fontWeight: 700,
-    cursor: "pointer",
-    fontSize: 14,
-  },
-  warnBanner: {
-    background: "#fff8e6",
-    border: "1px solid #f0d78c",
-    color: "#7a5c00",
-    padding: "12px 14px",
-    borderRadius: 10,
-    marginBottom: 16,
-    lineHeight: 1.6,
-  },
-  errorBanner: {
-    background: "#fdecea",
-    border: "1px solid #f5c6cb",
-    color: "#721c24",
-    padding: "12px 14px",
-    borderRadius: 10,
-    marginBottom: 16,
-    lineHeight: 1.6,
-  },
-  loading: { color: "#6b5a4c", marginTop: 12 },
-  mainTabs: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 10,
-    marginBottom: 20,
-  },
-  mainTab: {
-    padding: "10px 18px",
-    borderRadius: 999,
-    border: "1px solid rgba(0,0,0,0.15)",
-    cursor: "pointer",
-    fontWeight: 700,
-    fontSize: 15,
-  },
-  tabs: { display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap" },
-  tab: {
-    padding: "8px 16px",
-    borderRadius: 999,
-    border: "1px solid rgba(0,0,0,0.15)",
-    cursor: "pointer",
-    fontWeight: 700,
-  },
-  card: {
-    background: "#fff",
-    padding: 20,
-    borderRadius: 18,
-    boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-  },
-  dashboardCard: {
-    background: "#fff",
-    padding: 20,
-    borderRadius: 18,
-    boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-    marginBottom: 16,
-  },
-  dashboardStack: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 16,
-  },
-  orderBlock: {
-    background: "#fff",
-    padding: 16,
-    borderRadius: 16,
-    border: "1px solid rgba(201, 162, 77, 0.25)",
-    boxShadow: "0 6px 18px rgba(0,0,0,0.06)",
-  },
-  orderHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 12,
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  orderGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-    gap: 10,
-    marginBottom: 12,
-    fontSize: 14,
-    color: "#2e241d",
-  },
-  label: { color: "#7a6a5c", fontWeight: 600 },
-  muted: { color: "#6b5a4c", fontSize: 14 },
-  sectionTitle: { marginBottom: 16 },
-  form: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: 10,
-    marginBottom: 20,
-  },
-  input: {
-    padding: "8px 12px",
-    borderRadius: 8,
-    border: "1px solid rgba(0,0,0,0.2)",
-  },
-  textarea: {
-    gridColumn: "1 / -1",
-    padding: "8px 12px",
-    borderRadius: 8,
-    border: "1px solid rgba(0,0,0,0.2)",
-    minHeight: 70,
-  },
-  addBtn: {
-    gridColumn: "1 / -1",
-    background: "#c9a24d",
-    color: "#fff",
-    border: "none",
-    borderRadius: 8,
-    padding: "10px",
-    cursor: "pointer",
-  },
-  row: {
-    display: "grid",
-    gridTemplateColumns: "1fr 2fr auto",
-    gap: 12,
-    padding: "14px 0",
-    borderBottom: "1px solid rgba(0,0,0,0.08)",
-  },
-  imagesRow: { display: "flex", gap: 6 },
-  thumb: { width: 55, height: 55, borderRadius: 8, objectFit: "cover" },
-  descText: { fontSize: 13, color: "#6b5a4c" },
-  inactiveBadge: { color: "#999", fontSize: 13 },
-  editBtn: {
-    marginRight: 6,
-    background: "#eee",
-    border: "none",
-    padding: "6px 10px",
-    borderRadius: 6,
-    cursor: "pointer",
-  },
-  deleteBtn: {
-    background: "transparent",
-    border: "none",
-    color: "#b33",
-    cursor: "pointer",
-  },
-  saveBtn: {
-    background: "#4caf50",
-    color: "#fff",
-    border: "none",
-    padding: "8px 12px",
-    borderRadius: 6,
-    cursor: "pointer",
-  },
-  tableScroll: { overflowX: "auto", WebkitOverflowScrolling: "touch" },
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    fontSize: 13,
-    minWidth: 720,
-  },
-  th: {
-    textAlign: "right",
-    padding: "10px 8px",
-    borderBottom: "2px solid rgba(201, 162, 77, 0.35)",
-    color: "#2e241d",
-    whiteSpace: "nowrap",
-  },
-  td: {
-    padding: "10px 8px",
-    borderBottom: "1px solid rgba(0,0,0,0.06)",
-    verticalAlign: "top",
-  },
-  tdSmall: {
-    padding: "10px 8px",
-    borderBottom: "1px solid rgba(0,0,0,0.06)",
-    maxWidth: 140,
-    wordBreak: "break-word",
-    fontSize: 12,
-  },
-  statusSelect: {
-    padding: "6px 8px",
-    borderRadius: 8,
-    border: "1px solid rgba(0,0,0,0.2)",
-    minWidth: 100,
-    fontSize: 13,
-  },
-};

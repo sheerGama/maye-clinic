@@ -57,50 +57,62 @@ export default function Shop() {
   };
 
   return (
-    <div style={page} dir="rtl">
-      <h1>المتجر</h1>
+    <div className="mc-page" dir="rtl">
+      <h1 className="mc-page-title">المتجر</h1>
 
       {loading && (
-        <p style={loadingText} role="status">
+        <p className="mc-loading mc-loading--inline" role="status">
           جاري تحميل المنتجات…
         </p>
       )}
 
       {showFetchError && (
-        <div style={errorBanner} role="alert">
+        <div className="mc-alert mc-alert--error" role="alert">
           تعذر تحميل المنتجات من السيرفر، ولا توجد بيانات محفوظة محلياً. تحقق من
           الاتصال أو أضيفي المنتجات من لوحة التحكم.
         </div>
       )}
 
       {!loading && (
-        <div style={grid}>
+        <div className="mc-catalog-grid">
           {products.length === 0 && !showFetchError && (
-            <p style={emptyHint}>لا توجد منتجات متاحة حالياً.</p>
+            <p className="mc-muted" style={{ gridColumn: "1 / -1" }}>
+              لا توجد منتجات متاحة حالياً.
+            </p>
           )}
 
           {products.map((product) => (
-            <div key={product.id} style={card}>
-              <img src={product.images[0]} alt="" style={img} />
+            <article key={product.id} className="mc-catalog-card">
+              <div className="mc-catalog-img-wrap">
+                <img
+                  src={product.images[0]}
+                  alt=""
+                  className="mc-catalog-img"
+                />
+              </div>
 
               <h3>{product.name}</h3>
-              <p style={desc}>{product.desc}</p>
-              <strong>{product.price} ₪</strong>
+              <p className="mc-catalog-desc">{product.desc}</p>
+              <p className="mc-catalog-price">{product.price} ₪</p>
 
-              <button
-                style={viewBtn}
-                onClick={() => setGallery(product.images)}
-              >
-                عرض الصور
-              </button>
+              <div className="mc-catalog-actions">
+                <button
+                  type="button"
+                  className="mc-btn mc-btn-primary mc-btn-block"
+                  onClick={() => setGallery(product.images)}
+                >
+                  عرض الصور
+                </button>
 
-              <button
-                style={cartBtn}
-                onClick={() => addToCart(product)}
-              >
-                أضف إلى السلة
-              </button>
-            </div>
+                <button
+                  type="button"
+                  className="mc-btn mc-btn-outline mc-btn-block"
+                  onClick={() => addToCart(product)}
+                >
+                  أضف إلى السلة
+                </button>
+              </div>
+            </article>
           ))}
         </div>
       )}
@@ -112,32 +124,41 @@ export default function Shop() {
   );
 }
 
-/* ================= MODAL ================= */
-
 function ImageModal({ images, onClose }) {
   const [index, setIndex] = useState(0);
 
   return (
-    <div style={overlay}>
-      <div style={modal}>
-        <button style={closeBtn} onClick={onClose}>
+    <div className="mc-modal-overlay" role="presentation">
+      <div className="mc-modal" role="dialog" aria-modal="true" aria-label="معرض الصور">
+        <button
+          type="button"
+          className="mc-modal-close"
+          onClick={onClose}
+          aria-label="إغلاق"
+        >
           ✕
         </button>
 
-        <img src={images[index]} alt="" style={modalImg} />
+        <img src={images[index]} alt="" className="mc-modal-img" />
 
-        <div style={nav}>
+        <div className="mc-modal-nav">
           <button
+            type="button"
             onClick={() =>
               setIndex((index - 1 + images.length) % images.length)
             }
+            aria-label="الصورة السابقة"
           >
             ‹
           </button>
           <span>
             {index + 1} / {images.length}
           </span>
-          <button onClick={() => setIndex((index + 1) % images.length)}>
+          <button
+            type="button"
+            onClick={() => setIndex((index + 1) % images.length)}
+            aria-label="الصورة التالية"
+          >
             ›
           </button>
         </div>
@@ -145,126 +166,3 @@ function ImageModal({ images, onClose }) {
     </div>
   );
 }
-
-/* ================= STYLES ================= */
-
-const page = {
-  maxWidth: 1100,
-  margin: "40px auto",
-  padding: 20,
-};
-
-const loadingText = {
-  color: "#6b5a4c",
-  fontSize: 16,
-  marginTop: 16,
-};
-
-const errorBanner = {
-  background: "#fdecea",
-  border: "1px solid #f5c6cb",
-  color: "#721c24",
-  padding: "14px 16px",
-  borderRadius: 12,
-  marginTop: 16,
-  lineHeight: 1.6,
-};
-
-const emptyHint = {
-  color: "#9c8b7a",
-  fontSize: 14,
-  gridColumn: "1 / -1",
-};
-
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fill,minmax(250px,1fr))",
-  gap: 20,
-};
-
-const card = {
-  background: "#fff",
-  padding: 16,
-  borderRadius: 16,
-  boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
-};
-
-const img = {
-  width: "100%",
-  height: 200,
-  objectFit: "cover",
-  borderRadius: 12,
-  marginBottom: 10,
-};
-
-const desc = {
-  color: "#6b5a4c",
-  fontSize: 14,
-  margin: "8px 0",
-};
-
-const viewBtn = {
-  marginTop: 8,
-  width: "100%",
-  padding: "8px",
-  borderRadius: 8,
-  border: "none",
-  background: "#c9a24d",
-  color: "#fff",
-  cursor: "pointer",
-};
-
-const cartBtn = {
-  marginTop: 8,
-  width: "100%",
-  padding: "8px",
-  borderRadius: 8,
-  border: "1px solid #c9a24d",
-  background: "#fff",
-  color: "#c9a24d",
-  cursor: "pointer",
-};
-
-/* Modal */
-
-const overlay = {
-  position: "fixed",
-  inset: 0,
-  background: "rgba(0,0,0,0.6)",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  zIndex: 1000,
-};
-
-const modal = {
-  background: "#fff",
-  padding: 20,
-  borderRadius: 16,
-  maxWidth: 600,
-  width: "90%",
-  position: "relative",
-};
-
-const modalImg = {
-  width: "100%",
-  maxHeight: 400,
-  objectFit: "contain",
-};
-
-const closeBtn = {
-  position: "absolute",
-  top: 10,
-  right: 10,
-  border: "none",
-  background: "transparent",
-  fontSize: 20,
-  cursor: "pointer",
-};
-
-const nav = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginTop: 10,
-};

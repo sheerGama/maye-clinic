@@ -1,0 +1,14 @@
+.siteFooter {
+  text-align: center;
+  padding: clamp(20px, 4vw, 28px) 16px;
+  margin-top: auto;
+  background: linear-gradient(180deg, var(--mc-bg-mid) 0%, var(--mc-bg) 100%);
+  border-top: 1px solid var(--mc-border);
+  color: var(--mc-text-muted);
+  font-size: 14px;
+}
+
+.siteFooter strong {
+  color: var(--mc-text);
+  font-weight: 700;
+}

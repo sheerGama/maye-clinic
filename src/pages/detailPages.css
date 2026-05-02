@@ -1,0 +1,51 @@
+/* Placeholder detail routes — aligns with Maye Clinic theme (no extra logic) */
+.detailStub {
+  min-height: 50vh;
+}
+
+.detailStub-card {
+  max-width: 560px;
+  margin: 0 auto;
+  background: var(--mc-surface);
+  border-radius: var(--mc-radius-lg);
+  padding: clamp(24px, 5vw, 36px);
+  border: 1px solid var(--mc-border-gold);
+  box-shadow: var(--mc-shadow-md);
+  text-align: center;
+}
+
+.detailStub-card h1 {
+  margin: 0 0 12px;
+}
+
+.detailStub-card p {
+  margin: 0 0 22px;
+}
+
+.detailStub-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 22px;
+  border-radius: var(--mc-radius-pill);
+  background: linear-gradient(
+    135deg,
+    var(--mc-gold-mid) 0%,
+    var(--mc-gold) 50%,
+    var(--mc-gold-dark) 100%
+  );
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 15px;
+  box-shadow: 0 10px 28px rgba(201, 162, 77, 0.35);
+}
+
+.detailStub-back:hover {
+  filter: brightness(1.03);
+}
+
+.detailStub-back:focus-visible {
+  outline: 2px solid var(--mc-gold);
+  outline-offset: 3px;
+}

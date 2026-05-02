@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import "./cart.css";
 
 export default function Cart() {
   const [cart, setCart] = useState([]);
@@ -17,45 +18,49 @@ export default function Cart() {
   const total = cart.reduce((sum, i) => sum + Number(i.price), 0);
 
   return (
-    <div style={{ maxWidth: 900, margin: "40px auto", padding: 20 }}>
-      <h1>السلة</h1>
+    <div className="cartPage">
+      <h1 className="cartPageTitle">السلة</h1>
 
-      {cart.length === 0 && <p>السلة فارغة</p>}
-
-      {cart.map((item, i) => (
-        <div key={i} style={row}>
-          <img src={item.image} alt="" style={img} />
-          <div>
-            <strong>{item.name}</strong>
-            <div>{item.type === "service" ? "جلسة" : "منتج"}</div>
-          </div>
-          <div>{item.price} ₪</div>
-          <button onClick={() => removeItem(item.id)}>حذف</button>
+      {cart.length === 0 && (
+        <div className="cartEmpty">
+          <p>السلة فارغة — أضيفي خدمات أو منتجات من المتجر.</p>
         </div>
-      ))}
+      )}
 
       {cart.length > 0 && (
         <>
-          <h2>الإجمالي: {total} ₪</h2>
-          <Link to="/checkout">إتمام الطلب</Link>
+          <div className="cartList">
+            {cart.map((item, i) => (
+              <div key={`${item.id}-${i}`} className="cartRow">
+                <img src={item.image} alt="" className="cartThumb" />
+                <div className="cartMeta">
+                  <strong>{item.name}</strong>
+                  <div className="cartType">
+                    {item.type === "service" ? "جلسة" : "منتج"}
+                  </div>
+                </div>
+                <div className="cartPrice">{item.price} ₪</div>
+                <button
+                  type="button"
+                  className="cartRemove"
+                  onClick={() => removeItem(item.id)}
+                >
+                  حذف
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="cartSummary">
+            <p className="cartTotal">
+              الإجمالي: <span>{total} ₪</span>
+            </p>
+            <Link to="/checkout" className="cartCheckout">
+              إتمام الطلب
+            </Link>
+          </div>
         </>
       )}
     </div>
   );
 }
-
-const row = {
-  display: "grid",
-  gridTemplateColumns: "80px 1fr auto auto",
-  gap: 10,
-  alignItems: "center",
-  padding: "10px 0",
-  borderBottom: "1px solid #ddd",
-};
-
-const img = {
-  width: 70,
-  height: 70,
-  objectFit: "cover",
-  borderRadius: 8,
-};
