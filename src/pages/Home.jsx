@@ -57,7 +57,7 @@ export default function Home() {
         <div className="catsRow">
           <Link
             className="catCard catLaser"
-            to="/services"
+            to="/services/laser"
             style={{ backgroundImage: `url(${laserBg})` }}
           >
             <div className="catCircle">
