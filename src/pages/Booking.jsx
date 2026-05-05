@@ -7,6 +7,7 @@ import {
   isRlsOrWritePolicyError,
 } from "../lib/bookingsApi.js";
 import "./booking.css";
+import { useLanguage } from "../i18n/LanguageContext";
 
 const STORAGE_SKIN = "skin-items";
 const STORAGE_LASER = "laser-items";
@@ -45,6 +46,7 @@ function parseServiceKey(key) {
 }
 
 export default function Booking() {
+  const { t } = useLanguage();
   const [skinItems, setSkinItems] = useState([]);
   const [laserItems, setLaserItems] = useState([]);
   const [loadingServices, setLoadingServices] = useState(true);
@@ -86,18 +88,18 @@ export default function Booking() {
   const serviceOptions = useMemo(() => {
     const skin = skinItems.map((item) => ({
       key: `skin:${item.id}`,
-      label: `${item.name} — ${item.serviceType ?? "جلسات البشرة"}`,
+      label: `${item.name} — ${item.serviceType ?? t("booking.skinType")}`,
       name: item.name,
-      serviceType: item.serviceType ?? "جلسات البشرة",
+      serviceType: item.serviceType ?? t("booking.skinType"),
     }));
     const laser = laserItems.map((item) => ({
       key: `laser:${item.id}`,
-      label: `${item.name} — ${item.serviceType ?? "جلسات الليزر"}`,
+      label: `${item.name} — ${item.serviceType ?? t("booking.laserType")}`,
       name: item.name,
-      serviceType: item.serviceType ?? "جلسات الليزر",
+      serviceType: item.serviceType ?? t("booking.laserType"),
     }));
     return [...skin, ...laser];
-  }, [skinItems, laserItems]);
+  }, [skinItems, laserItems, t]);
 
   const update = (field, value) => {
     setForm((f) => ({ ...f, [field]: value }));
@@ -115,18 +117,18 @@ export default function Booking() {
   const validate = () => {
     const next = {};
     const name = form.fullName.trim();
-    if (!name) next.fullName = "الرجاء إدخال الاسم الكامل";
+    if (!name) next.fullName = t("booking.validation.fullName");
 
     const phone = form.phone.trim().replace(/\s/g, "");
-    if (!phone) next.phone = "الرجاء إدخال رقم الهاتف";
+    if (!phone) next.phone = t("booking.validation.phone");
     else if (phone.replace(/\D/g, "").length < 9)
-      next.phone = "رقم الهاتف يبدو غير مكتمل";
+      next.phone = t("booking.validation.phoneIncomplete");
 
-    if (!form.serviceKey) next.serviceKey = "الرجاء اختيار خدمة";
+    if (!form.serviceKey) next.serviceKey = t("booking.validation.service");
 
-    if (!form.date) next.date = "الرجاء اختيار التاريخ";
+    if (!form.date) next.date = t("booking.validation.date");
 
-    if (!form.time) next.time = "الرجاء اختيار الوقت";
+    if (!form.time) next.time = t("booking.validation.time");
 
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -139,7 +141,7 @@ export default function Booking() {
 
     const parsed = parseServiceKey(form.serviceKey);
     if (!parsed) {
-      setErrors({ serviceKey: "تعذر تحديد الخدمة المختارة" });
+      setErrors({ serviceKey: t("booking.validation.serviceInvalid") });
       return;
     }
 
@@ -147,7 +149,7 @@ export default function Booking() {
     const service = list.find((i) => String(i.id) === String(parsed.id));
     if (!service) {
       setErrors({
-        serviceKey: "الخدمة غير متوفرة بعد الآن. أعد اختيار الخدمة.",
+          serviceKey: t("booking.validation.serviceUnavailable"),
       });
       return;
     }
@@ -156,7 +158,7 @@ export default function Booking() {
 
     if (useLocalFallback) {
       const serviceTypeLabel =
-        parsed.type === "skin" ? "جلسات البشرة" : "جلسات الليزر";
+        parsed.type === "skin" ? t("booking.skinType") : t("booking.laserType");
 
       const booking = {
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
@@ -195,12 +197,10 @@ export default function Booking() {
     if (error) {
       if (isRlsOrWritePolicyError(error)) {
         setSubmitError(
-          "لا تسمح سياسات الأمان (RLS) حالياً بحفظ الحجز. راجع إعدادات Supabase أو اتصل بالمسؤول."
+          t("booking.submitErrors.rls")
         );
       } else {
-        setSubmitError(
-          `تعذر إرسال الحجز: ${error.message || "خطأ غير معروف"}`
-        );
+        setSubmitError(t("booking.submitErrors.unknown", { message: error.message || "Unknown error" }));
       }
       return;
     }
@@ -224,7 +224,7 @@ export default function Booking() {
       <div className="bookingPage">
         <div className="bookingInner">
           <p className="bookingLoading" role="status">
-            جاري تحميل الخدمات…
+            {t("booking.loading")}
           </p>
         </div>
       </div>
@@ -237,15 +237,14 @@ export default function Booking() {
         <div className="bookingInner">
           <header className="bookingHeader">
             <p className="bookingEyebrow">Maye Clinic</p>
-            <h1 className="bookingTitle">حجز موعد</h1>
+            <h1 className="bookingTitle">{t("booking.title")}</h1>
           </header>
           <div className="bookingEmpty">
-            <h2>لا توجد خدمات متاحة للحجز بعد</h2>
+            <h2>{t("booking.emptyTitle")}</h2>
             <p>
-              يرجى إضافة خدمات البشرة أو الليزر من لوحة التحكم أولاً، ثم العودة
-              لإكمال الحجز.
+              {t("booking.emptyBody")}
             </p>
-            <Link to="/admin">الانتقال إلى لوحة التحكم</Link>
+            <Link to="/admin">{t("booking.goToAdmin")}</Link>
           </div>
         </div>
       </div>
@@ -257,16 +256,15 @@ export default function Booking() {
       <div className="bookingInner">
         <header className="bookingHeader">
           <p className="bookingEyebrow">Maye Clinic</p>
-          <h1 className="bookingTitle">حجز موعد</h1>
+          <h1 className="bookingTitle">{t("booking.title")}</h1>
           <p className="bookingSubtitle">
-            املئي النموذج أدناه وسنتواصل معك لتأكيد الموعد بأسرع وقت.
+            {t("booking.subtitle")}
           </p>
         </header>
 
         {useLocalFallback && (
           <div className="bookingWarn" role="status">
-            يتم عرض الخدمات من التخزين المحلي لأن تحميل الخدمات من السيرفر تعذر أو
-            لا توجد بيانات. سيتم حفظ طلب الحجز محلياً فقط حتى يعود الاتصال.
+            {t("booking.fallbackWarn")}
           </div>
         )}
 
@@ -279,7 +277,7 @@ export default function Booking() {
 
           <div className="bookingField">
             <label htmlFor="fullName">
-              الاسم الكامل<span className="req">*</span>
+              {t("booking.fullName")}<span className="req">*</span>
             </label>
             <input
               id="fullName"
@@ -296,14 +294,14 @@ export default function Booking() {
 
           <div className="bookingField">
             <label htmlFor="phone">
-              رقم الهاتف<span className="req">*</span>
+              {t("booking.phone")}<span className="req">*</span>
             </label>
             <input
               id="phone"
               type="tel"
               inputMode="tel"
               autoComplete="tel"
-              placeholder="مثال: 0501234567"
+              placeholder={t("booking.phonePlaceholder")}
               value={form.phone}
               onChange={(e) => update("phone", e.target.value)}
               aria-invalid={!!errors.phone}
@@ -315,7 +313,7 @@ export default function Booking() {
 
           <div className="bookingField">
             <label htmlFor="serviceKey">
-              الخدمة<span className="req">*</span>
+              {t("booking.service")}<span className="req">*</span>
             </label>
             <select
               id="serviceKey"
@@ -323,7 +321,7 @@ export default function Booking() {
               onChange={(e) => update("serviceKey", e.target.value)}
               aria-invalid={!!errors.serviceKey}
             >
-              <option value="">— اختاري الخدمة —</option>
+              <option value="">{t("booking.chooseService")}</option>
               {serviceOptions.map((opt) => (
                 <option key={opt.key} value={opt.key}>
                   {opt.label}
@@ -337,7 +335,7 @@ export default function Booking() {
 
           <div className="bookingField">
             <label htmlFor="date">
-              التاريخ<span className="req">*</span>
+              {t("booking.date")}<span className="req">*</span>
             </label>
             <input
               id="date"
@@ -354,7 +352,7 @@ export default function Booking() {
 
           <div className="bookingField">
             <label htmlFor="time">
-              الوقت<span className="req">*</span>
+              {t("booking.time")}<span className="req">*</span>
             </label>
             <input
               id="time"
@@ -369,23 +367,23 @@ export default function Booking() {
           </div>
 
           <div className="bookingField">
-            <label htmlFor="notes">ملاحظات (اختياري)</label>
+            <label htmlFor="notes">{t("booking.notesOptional")}</label>
             <textarea
               id="notes"
               rows={3}
-              placeholder="أي تفاصيل تودين مشاركتها مع العيادة…"
+              placeholder={t("booking.notesPlaceholder")}
               value={form.notes}
               onChange={(e) => update("notes", e.target.value)}
             />
           </div>
 
           <button type="submit" className="bookingSubmit">
-            إرسال طلب الحجز
+            {t("booking.submit")}
           </button>
 
           {success && (
             <p className="bookingSuccess" role="status">
-              تم استلام طلبك بنجاح. سنتواصل معك قريباً لتأكيد الموعد.
+              {t("booking.success")}
             </p>
           )}
         </form>

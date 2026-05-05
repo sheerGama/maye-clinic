@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { getProducts } from "../lib/catalogApi.js";
+import { useLanguage } from "../i18n/LanguageContext";
 
 export default function Shop() {
+  const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const [gallery, setGallery] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -53,23 +55,22 @@ export default function Shop() {
     });
 
     localStorage.setItem("cart-items", JSON.stringify(cart));
-    alert("تمت إضافة المنتج إلى السلة 🛒");
+    alert(t("shop.addedToCart"));
   };
 
   return (
-    <div className="mc-page" dir="rtl">
-      <h1 className="mc-page-title">المتجر</h1>
+    <div className="mc-page">
+      <h1 className="mc-page-title">{t("shop.pageTitle")}</h1>
 
       {loading && (
         <p className="mc-loading mc-loading--inline" role="status">
-          جاري تحميل المنتجات…
+          {t("common.loadingProducts")}
         </p>
       )}
 
       {showFetchError && (
         <div className="mc-alert mc-alert--error" role="alert">
-          تعذر تحميل المنتجات من السيرفر، ولا توجد بيانات محفوظة محلياً. تحقق من
-          الاتصال أو أضيفي المنتجات من لوحة التحكم.
+          {t("shop.fetchError")}
         </div>
       )}
 
@@ -77,7 +78,7 @@ export default function Shop() {
         <div className="mc-catalog-grid">
           {products.length === 0 && !showFetchError && (
             <p className="mc-muted" style={{ gridColumn: "1 / -1" }}>
-              لا توجد منتجات متاحة حالياً.
+              {t("shop.empty")}
             </p>
           )}
 
@@ -101,7 +102,7 @@ export default function Shop() {
                   className="mc-btn mc-btn-primary mc-btn-block"
                   onClick={() => setGallery(product.images)}
                 >
-                  عرض الصور
+                  {t("common.viewImages")}
                 </button>
 
                 <button
@@ -109,7 +110,7 @@ export default function Shop() {
                   className="mc-btn mc-btn-outline mc-btn-block"
                   onClick={() => addToCart(product)}
                 >
-                  أضف إلى السلة
+                  {t("common.addToCart")}
                 </button>
               </div>
             </article>
@@ -118,23 +119,28 @@ export default function Shop() {
       )}
 
       {gallery && (
-        <ImageModal images={gallery} onClose={() => setGallery(null)} />
+        <ImageModal images={gallery} onClose={() => setGallery(null)} t={t} />
       )}
     </div>
   );
 }
 
-function ImageModal({ images, onClose }) {
+function ImageModal({ images, onClose, t }) {
   const [index, setIndex] = useState(0);
 
   return (
     <div className="mc-modal-overlay" role="presentation">
-      <div className="mc-modal" role="dialog" aria-modal="true" aria-label="معرض الصور">
+      <div
+        className="mc-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label={t("common.imageGallery")}
+      >
         <button
           type="button"
           className="mc-modal-close"
           onClick={onClose}
-          aria-label="إغلاق"
+          aria-label={t("common.close")}
         >
           ✕
         </button>
@@ -147,7 +153,7 @@ function ImageModal({ images, onClose }) {
             onClick={() =>
               setIndex((index - 1 + images.length) % images.length)
             }
-            aria-label="الصورة السابقة"
+            aria-label={t("common.previousImage")}
           >
             ‹
           </button>
@@ -157,7 +163,7 @@ function ImageModal({ images, onClose }) {
           <button
             type="button"
             onClick={() => setIndex((index + 1) % images.length)}
-            aria-label="الصورة التالية"
+            aria-label={t("common.nextImage")}
           >
             ›
           </button>

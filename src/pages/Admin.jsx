@@ -21,6 +21,7 @@ import {
   mapBookingRow,
 } from "../lib/adminOrdersApi.js";
 import "./admin.css";
+import { useLanguage } from "../i18n/LanguageContext";
 
 const BOOKING_STATUS_OPTIONS = ["جديد", "مؤكد", "مكتمل", "ملغي"];
 const ORDER_STATUS_OPTIONS = ["جديد", "قيد التجهيز", "مكتمل", "ملغي"];
@@ -48,10 +49,10 @@ function loadOrdersFromLs() {
   }
 }
 
-function formatDt(iso) {
+function formatDt(iso, language) {
   if (!iso) return "—";
   try {
-    return new Date(iso).toLocaleString("ar-EG", {
+    return new Date(iso).toLocaleString(language === "ar" ? "ar-EG" : "en-US", {
       dateStyle: "short",
       timeStyle: "short",
     });
@@ -60,9 +61,16 @@ function formatDt(iso) {
   }
 }
 
+function getStatusLabel(t, status) {
+  const key = `admin.status.${status}`;
+  const translated = t(key);
+  return translated === key ? status : translated;
+}
+
 const AUTH_KEY = "admin-auth";
 
 export default function Admin() {
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const [mainView, setMainView] = useState("catalog");
   const [tab, setTab] = useState("skin");
@@ -192,15 +200,15 @@ export default function Admin() {
     if (bRes.error || oRes.error) {
       setShowDashboardFallback(true);
       const parts = [];
-      if (bRes.error) parts.push("الحجوزات");
-      if (oRes.error) parts.push("الطلبات");
+      if (bRes.error) parts.push(t("admin.bookingsPart"));
+      if (oRes.error) parts.push(t("admin.ordersPart"));
       setDashLoadError(
-        `تعذر تحميل ${parts.join(" و ")} من السيرفر. يتم عرض النسخ المحلية إن وُجدت.`
+        t("admin.dashboardLoadError", { parts: parts.join(language === "ar" ? " و " : " and ") })
       );
     }
 
     setLoadingDash(false);
-  }, []);
+  }, [language, t]);
 
   useEffect(() => {
     loadCatalog();
@@ -238,10 +246,10 @@ export default function Admin() {
       if (error) {
         if (isRlsOrWritePolicyError(error)) {
           setWritePolicyHint(
-            "لا تسمح سياسات الأمان بالتحديث. شغّل supabase/admin_orders_policies_prototype.sql إن لزم."
+            t("admin.writeHint")
           );
         } else {
-          alert(`فشل التحديث: ${error.message}`);
+          alert(`Update failed: ${error.message}`);
         }
         return;
       }
@@ -273,10 +281,10 @@ export default function Admin() {
       if (error) {
         if (isRlsOrWritePolicyError(error)) {
           setWritePolicyHint(
-            "لا تسمح سياسات الأمان بالتحديث. شغّل supabase/admin_orders_policies_prototype.sql إن لزم."
+            t("admin.writeHint")
           );
         } else {
-          alert(`فشل التحديث: ${error.message}`);
+          alert(`Update failed: ${error.message}`);
         }
         return;
       }
@@ -308,29 +316,27 @@ export default function Admin() {
         : productItems;
 
   return (
-    <div className="admin-page" dir="rtl">
+    <div className="admin-page">
       <div className="admin-title-row">
-        <h1 className="admin-title">لوحة التحكم – Maye Clinic</h1>
+        <h1 className="admin-title">{t("admin.title")}</h1>
         <button
           type="button"
           className="admin-logout-btn"
           onClick={handleLogout}
         >
-          تسجيل الخروج
+          {t("admin.logout")}
         </button>
       </div>
 
       {showLocalFallback && (
         <div className="admin-warn-banner" role="status">
-          يتم عرض بيانات الكتالوج من التخزين المحلي فقط لأن الاتصال بقاعدة البيانات
-          فشل أو غير متاح.
+          {t("admin.catalogFallback")}
         </div>
       )}
 
       {showDashboardFallback && (
         <div className="admin-warn-banner" role="status">
-          يتم عرض حجوزات الجلسات و/أو طلبات المتجر من النسخ المحلية (إن وُجدت)
-          لأن التحميل من السيرفر تعذر. {dashLoadError && ` ${dashLoadError}`}
+          {t("admin.dashboardFallback")} {dashLoadError && ` ${dashLoadError}`}
         </div>
       )}
 
@@ -340,7 +346,7 @@ export default function Admin() {
         </div>
       )}
 
-      <div className="admin-main-tabs" role="tablist" aria-label="أقسام لوحة التحكم">
+      <div className="admin-main-tabs" role="tablist" aria-label={t("admin.title")}>
         <button
           type="button"
           role="tab"
@@ -350,7 +356,7 @@ export default function Admin() {
           }
           onClick={() => setMainView("catalog")}
         >
-          إدارة الكتالوج
+          {t("admin.tabs.catalog")}
         </button>
         <button
           type="button"
@@ -361,7 +367,7 @@ export default function Admin() {
           }
           onClick={() => setMainView("bookings")}
         >
-          حجوزات الجلسات
+          {t("admin.tabs.bookings")}
         </button>
         <button
           type="button"
@@ -372,7 +378,7 @@ export default function Admin() {
           }
           onClick={() => setMainView("orders")}
         >
-          طلبات المتجر
+          {t("admin.tabs.orders")}
         </button>
       </div>
 
@@ -380,26 +386,27 @@ export default function Admin() {
         <>
           <div className="admin-sub-tabs">
             <Tab
-              label="جلسات البشرة"
+              label={t("admin.subTabs.skin")}
               active={tab === "skin"}
               onClick={() => setTab("skin")}
             />
             <Tab
-              label="جلسات الليزر"
+              label={t("admin.subTabs.laser")}
               active={tab === "laser"}
               onClick={() => setTab("laser")}
             />
             <Tab
-              label="المنتجات"
+              label={t("admin.subTabs.products")}
               active={tab === "products"}
               onClick={() => setTab("products")}
             />
           </div>
 
           {loading ? (
-            <p className="admin-loading">جاري تحميل البيانات…</p>
+            <p className="admin-loading">{t("admin.loadingData")}</p>
           ) : (
             <AdminSection
+              t={t}
               tabType={tab === "products" ? "products" : "services"}
               serviceCategory={
                 tab === "skin" ? "skin" : tab === "laser" ? "laser" : "skin"
@@ -414,6 +421,8 @@ export default function Admin() {
 
       {mainView === "bookings" && (
         <BookingsPanel
+          t={t}
+          language={language}
           loading={loadingDash}
           bookings={bookings}
           onStatusChange={handleBookingStatus}
@@ -422,6 +431,8 @@ export default function Admin() {
 
       {mainView === "orders" && (
         <OrdersPanel
+          t={t}
+          language={language}
           loading={loadingDash}
           orders={orders}
           onStatusChange={handleOrderStatus}
@@ -443,36 +454,36 @@ function Tab({ label, active, onClick }) {
   );
 }
 
-function BookingsPanel({ loading, bookings, onStatusChange }) {
+function BookingsPanel({ loading, bookings, onStatusChange, t, language }) {
   if (loading) {
-    return <p className="admin-loading">جاري تحميل الحجوزات…</p>;
+    return <p className="admin-loading">{t("admin.loadingBookings")}</p>;
   }
 
   if (bookings.length === 0) {
     return (
       <div className="admin-panel">
-        <h2 className="admin-section-title">حجوزات الجلسات</h2>
-        <p className="admin-muted">لا توجد حجوزات لعرضها.</p>
+        <h2 className="admin-section-title">{t("admin.bookingsTitle")}</h2>
+        <p className="admin-muted">{t("admin.noBookings")}</p>
       </div>
     );
   }
 
   return (
     <div className="admin-panel">
-      <h2 className="admin-section-title">حجوزات الجلسات</h2>
+      <h2 className="admin-section-title">{t("admin.bookingsTitle")}</h2>
       <div className="admin-table-scroll">
         <table className="admin-table">
           <thead>
             <tr>
-              <th className="admin-th">الاسم</th>
-              <th className="admin-th">الهاتف</th>
-              <th className="admin-th">الخدمة</th>
-              <th className="admin-th">النوع</th>
-              <th className="admin-th">التاريخ</th>
-              <th className="admin-th">الوقت</th>
-              <th className="admin-th">ملاحظات</th>
-              <th className="admin-th">الحالة</th>
-              <th className="admin-th">أُنشئت</th>
+              <th className="admin-th">{t("admin.table.name")}</th>
+              <th className="admin-th">{t("admin.table.phone")}</th>
+              <th className="admin-th">{t("admin.table.service")}</th>
+              <th className="admin-th">{t("admin.table.type")}</th>
+              <th className="admin-th">{t("admin.table.date")}</th>
+              <th className="admin-th">{t("admin.table.time")}</th>
+              <th className="admin-th">{t("admin.table.notes")}</th>
+              <th className="admin-th">{t("admin.table.status")}</th>
+              <th className="admin-th">{t("admin.table.created")}</th>
             </tr>
           </thead>
           <tbody>
@@ -492,18 +503,18 @@ function BookingsPanel({ loading, bookings, onStatusChange }) {
                       onStatusChange(b.id, e.target.value)
                     }
                     className="admin-status-select"
-                    aria-label="حالة الحجز"
+                    aria-label={t("admin.bookingStatusLabel")}
                   >
                     {[
                       ...new Set([...BOOKING_STATUS_OPTIONS, b.status].filter(Boolean)),
                     ].map((s) => (
                       <option key={s} value={s}>
-                        {s}
+                        {getStatusLabel(t, s)}
                       </option>
                     ))}
                   </select>
                 </td>
-                <td className="admin-td-small">{formatDt(b.createdAt)}</td>
+                <td className="admin-td-small">{formatDt(b.createdAt, language)}</td>
               </tr>
             ))}
           </tbody>
@@ -513,16 +524,16 @@ function BookingsPanel({ loading, bookings, onStatusChange }) {
   );
 }
 
-function OrdersPanel({ loading, orders, onStatusChange }) {
+function OrdersPanel({ loading, orders, onStatusChange, t, language }) {
   if (loading) {
-    return <p className="admin-loading">جاري تحميل الطلبات…</p>;
+    return <p className="admin-loading">{t("admin.loadingOrders")}</p>;
   }
 
   if (orders.length === 0) {
     return (
       <div className="admin-panel">
-        <h2 className="admin-section-title">طلبات المتجر</h2>
-        <p className="admin-muted">لا توجد طلبات لعرضها.</p>
+        <h2 className="admin-section-title">{t("admin.ordersTitle")}</h2>
+        <p className="admin-muted">{t("admin.noOrders")}</p>
       </div>
     );
   }
@@ -532,48 +543,48 @@ function OrdersPanel({ loading, orders, onStatusChange }) {
       {orders.map((order) => (
         <div key={String(order.id)} className="admin-order-card">
           <div className="admin-order-head">
-            <strong>طلب #{String(order.id).slice(0, 8)}…</strong>
-            <span className="admin-muted">{formatDt(order.createdAt)}</span>
+            <strong>#{String(order.id).slice(0, 8)}…</strong>
+            <span className="admin-muted">{formatDt(order.createdAt, language)}</span>
           </div>
           <div className="admin-order-grid">
             <div>
-              <span className="admin-kv-label">الاسم:</span>{" "}
+              <span className="admin-kv-label">{t("admin.table.name")}:</span>{" "}
               {order.customer?.fullName}
             </div>
             <div>
-              <span className="admin-kv-label">الهاتف:</span>{" "}
+              <span className="admin-kv-label">{t("admin.table.phone")}:</span>{" "}
               {order.customer?.phone}
             </div>
             <div>
-              <span className="admin-kv-label">المدينة:</span>{" "}
+              <span className="admin-kv-label">{t("admin.labels.city")}</span>{" "}
               {order.customer?.city}
             </div>
             <div>
-              <span className="admin-kv-label">العنوان:</span>{" "}
+              <span className="admin-kv-label">{t("admin.labels.address")}</span>{" "}
               {order.customer?.address}
             </div>
             <div className="admin-order-grid-full">
-              <span className="admin-kv-label">ملاحظات:</span>{" "}
+              <span className="admin-kv-label">{t("admin.labels.notes")}</span>{" "}
               {order.customer?.notes || "—"}
             </div>
             <div>
-              <span className="admin-kv-label">الإجمالي:</span> {order.total} ₪
+              <span className="admin-kv-label">{t("admin.labels.total")}</span> {order.total} ₪
             </div>
             <div>
-              <span className="admin-kv-label">الحالة:</span>{" "}
+              <span className="admin-kv-label">{t("admin.labels.status")}</span>{" "}
               <select
                 value={order.status}
                 onChange={(e) =>
                   onStatusChange(order.id, e.target.value)
                 }
                 className="admin-status-select"
-                aria-label="حالة الطلب"
+                aria-label={t("admin.orderStatusLabel")}
               >
                 {[
                   ...new Set([...ORDER_STATUS_OPTIONS, order.status].filter(Boolean)),
                 ].map((s) => (
                   <option key={s} value={s}>
-                    {s}
+                    {getStatusLabel(t, s)}
                   </option>
                 ))}
               </select>
@@ -583,11 +594,11 @@ function OrdersPanel({ loading, orders, onStatusChange }) {
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th className="admin-th">المنتج</th>
-                  <th className="admin-th">النوع</th>
-                  <th className="admin-th">السعر</th>
-                  <th className="admin-th">الكمية</th>
-                  <th className="admin-th">المجموع</th>
+                  <th className="admin-th">{t("admin.table.product")}</th>
+                  <th className="admin-th">{t("admin.table.type")}</th>
+                  <th className="admin-th">{t("admin.table.price")}</th>
+                  <th className="admin-th">{t("admin.table.quantity")}</th>
+                  <th className="admin-th">{t("admin.table.total")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -613,7 +624,7 @@ function OrdersPanel({ loading, orders, onStatusChange }) {
   );
 }
 
-function AdminSection({ tabType, serviceCategory, items, onReload, onRlsHint }) {
+function AdminSection({ tabType, serviceCategory, items, onReload, onRlsHint, t }) {
   const isProduct = tabType === "products";
 
   const [name, setName] = useState("");
@@ -644,16 +655,16 @@ function AdminSection({ tabType, serviceCategory, items, onReload, onRlsHint }) 
   const handleMutationError = (error) => {
     if (isRlsOrWritePolicyError(error)) {
       onRlsHint(
-        "لا تسمح سياسات الأمان (RLS) حالياً بالكتابة على الجدول. شغّل ملف supabase/admin_catalog_policies.sql في محرر SQL أو فعّل سياسات مناسبة لاحقاً."
+        t("admin.writeHint")
       );
     } else {
-      alert(`فشلت العملية: ${error?.message || "خطأ غير معروف"}`);
+      alert(`Operation failed: ${error?.message || "Unknown error"}`);
     }
   };
 
   const addItem = async () => {
     if (!name || !price || !desc || images.length < 1) {
-      alert("الرجاء إدخال الاسم والسعر والوصف وصورة واحدة على الأقل");
+      alert(t("admin.addValidation"));
       return;
     }
 
@@ -722,7 +733,7 @@ function AdminSection({ tabType, serviceCategory, items, onReload, onRlsHint }) 
 
   const saveEdit = async () => {
     if (editData.images.length < 1) {
-      alert("يجب وجود صورة واحدة على الأقل");
+      alert(t("admin.saveValidation"));
       return;
     }
 
@@ -760,25 +771,25 @@ function AdminSection({ tabType, serviceCategory, items, onReload, onRlsHint }) 
 
   return (
     <div className="admin-editor-card">
-      <h2 className="admin-section-title">إدارة العناصر</h2>
+      <h2 className="admin-section-title">{t("admin.sectionManageItems")}</h2>
 
       <div className="admin-add-form">
         <input
           className="admin-input"
-          placeholder="الاسم"
+          placeholder={t("admin.input.name")}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <input
           className="admin-input"
-          placeholder="السعر"
+          placeholder={t("admin.input.price")}
           value={price}
           onChange={(e) => setPrice(e.target.value)}
         />
 
         <textarea
           className="admin-textarea"
-          placeholder="الوصف"
+          placeholder={t("admin.input.description")}
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
         />
@@ -791,7 +802,7 @@ function AdminSection({ tabType, serviceCategory, items, onReload, onRlsHint }) 
         />
 
         <button type="button" className="admin-btn-add" onClick={addItem}>
-          إضافة
+          {t("admin.add")}
         </button>
       </div>
 
@@ -835,7 +846,7 @@ function AdminSection({ tabType, serviceCategory, items, onReload, onRlsHint }) 
                 className="admin-btn-save"
                 onClick={saveEdit}
               >
-                حفظ
+                {t("admin.save")}
               </button>
             </>
           ) : (
@@ -848,7 +859,7 @@ function AdminSection({ tabType, serviceCategory, items, onReload, onRlsHint }) 
               <div>
                 <strong>{item.name}</strong>
                 {!item.is_active && (
-                  <span className="admin-inactive"> (معطّل)</span>
+                  <span className="admin-inactive"> {t("admin.inactive")}</span>
                 )}
                 <div>{item.price} ₪</div>
                 <p className="admin-desc">{item.desc}</p>
@@ -859,14 +870,14 @@ function AdminSection({ tabType, serviceCategory, items, onReload, onRlsHint }) 
                   className="admin-btn-edit"
                   onClick={() => startEdit(item)}
                 >
-                  تعديل
+                  {t("admin.edit")}
                 </button>
                 <button
                   type="button"
                   className="admin-btn-delete"
                   onClick={() => removeItem(item.id)}
                 >
-                  حذف
+                  {t("admin.delete")}
                 </button>
               </div>
             </>

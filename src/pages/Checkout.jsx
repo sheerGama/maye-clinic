@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { createFullOrder, supabaseOrderToBackupShape } from "../lib/ordersApi.js";
 import { isRlsOrWritePolicyError } from "../lib/adminCatalogApi.js";
 import "./checkout.css";
+import { useLanguage } from "../i18n/LanguageContext";
 
 const CART_KEY = "cart-items";
 const ORDERS_KEY = "order-items";
@@ -74,10 +75,10 @@ function normalizeCartLine(raw, index) {
   };
 }
 
-function typeLabel(type) {
-  if (type === "service") return "جلسة";
-  if (type === "product") return "منتج";
-  return "غير محدد";
+function typeLabel(type, t) {
+  if (type === "service") return t("common.serviceType");
+  if (type === "product") return t("common.productType");
+  return t("common.notSpecified");
 }
 
 function loadOrders() {
@@ -91,23 +92,23 @@ function loadOrders() {
   }
 }
 
-function buildWhatsAppUrl(orderId, customer, items, total) {
+function buildWhatsAppUrl(orderId, customer, items, total, t) {
   const lines = [
-    "طلب جديد — Maye Clinic / ذوق",
-    `رقم الطلب: ${orderId}`,
-    `الاسم: ${customer.fullName}`,
-    `الهاتف: ${customer.phone}`,
-    `المدينة: ${customer.city}`,
-    `العنوان: ${customer.address}`,
-    customer.notes ? `ملاحظات: ${customer.notes}` : null,
+    t("checkout.orderNewMessage"),
+    `${t("checkout.whatsapp.orderNumber")}: ${orderId}`,
+    `${t("checkout.whatsapp.name")}: ${customer.fullName}`,
+    `${t("checkout.whatsapp.phone")}: ${customer.phone}`,
+    `${t("checkout.whatsapp.city")}: ${customer.city}`,
+    `${t("checkout.whatsapp.address")}: ${customer.address}`,
+    customer.notes ? `${t("checkout.whatsapp.notes")}: ${customer.notes}` : null,
     "",
-    "العناصر:",
+    `${t("checkout.whatsapp.items")}:`,
     ...items.map(
       (it) =>
-        `• ${it.name} (${typeLabel(it.type)}) ×${it.quantity} — ${it.lineSubtotal} ₪`
+        `• ${it.name} (${typeLabel(it.type, t)}) ×${it.quantity} — ${it.lineSubtotal} ₪`
     ),
     "",
-    `الإجمالي: ${total} ₪`,
+    `${t("checkout.whatsapp.total")}: ${total} ₪`,
   ].filter((x) => x != null);
 
   const text = lines.join("\n");
@@ -116,6 +117,7 @@ function buildWhatsAppUrl(orderId, customer, items, total) {
 }
 
 export default function Checkout() {
+  const { t } = useLanguage();
   const [lines, setLines] = useState(() => loadCartItems());
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
@@ -144,15 +146,15 @@ export default function Checkout() {
 
   const validate = () => {
     const next = {};
-    if (!form.fullName.trim()) next.fullName = "الرجاء إدخال الاسم الكامل";
+    if (!form.fullName.trim()) next.fullName = t("checkout.validation.fullName");
 
     const phone = form.phone.trim().replace(/\s/g, "");
-    if (!phone) next.phone = "الرجاء إدخال رقم الهاتف";
+    if (!phone) next.phone = t("checkout.validation.phone");
     else if (phone.replace(/\D/g, "").length < 9)
-      next.phone = "رقم الهاتف يبدو غير مكتمل";
+      next.phone = t("checkout.validation.phoneIncomplete");
 
-    if (!form.city.trim()) next.city = "الرجاء إدخال المدينة";
-    if (!form.address.trim()) next.address = "الرجاء إدخال العنوان";
+    if (!form.city.trim()) next.city = t("checkout.validation.city");
+    if (!form.address.trim()) next.address = t("checkout.validation.address");
 
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -186,30 +188,28 @@ export default function Checkout() {
       if (err.isPartialFailure) {
         setSubmitError(
           err.message ||
-            "تم إنشاء الطلب لكن فشل حفظ العناصر. السلة لم تُفرغ — راجع قاعدة البيانات."
+            t("checkout.submitErrors.partial")
         );
         return;
       }
       if (isRlsOrWritePolicyError(error)) {
         setSubmitError(
-          "لا تسمح سياسات الأمان (RLS) أو الصلاحيات حالياً بإتمام الطلب. راجع إعدادات Supabase أو شغّل ملف order_select_policies_prototype.sql إن لزم."
+          t("checkout.submitErrors.rls")
         );
         return;
       }
-      setSubmitError(
-        `تعذر إتمام الطلب: ${error?.message || "خطأ في الشبكة أو الخادم"}`
-      );
+      setSubmitError(t("checkout.submitErrors.generic", { message: error?.message || "Server or network error" }));
       return;
     }
 
     if (!data?.order) {
-      setSubmitError("لم يتم إرجاع بيانات الطلب من الخادم.");
+      setSubmitError(t("checkout.submitErrors.noData"));
       return;
     }
 
     const backup = supabaseOrderToBackupShape(data.order, data.items);
     if (!backup) {
-      setSubmitError("تعذر تجهيز نسخة احتياطية من الطلب.");
+      setSubmitError(t("checkout.submitErrors.backup"));
       return;
     }
 
@@ -230,15 +230,14 @@ export default function Checkout() {
         <div className="checkoutInner">
           <header className="checkoutHeader">
             <p className="checkoutEyebrow">Maye Clinic</p>
-            <h1 className="checkoutTitle">إتمام الطلب</h1>
+            <h1 className="checkoutTitle">{t("checkout.title")}</h1>
           </header>
           <div className="checkoutEmpty">
-            <h2>السلة فارغة</h2>
+            <h2>{t("checkout.emptyTitle")}</h2>
             <p>
-              لا توجد منتجات أو جلسات في السلة. تسوّقي من المتجر ثم عودي لإتمام
-              الطلب.
+              {t("checkout.emptyBody")}
             </p>
-            <Link to="/shop">الانتقال إلى المتجر</Link>
+            <Link to="/shop">{t("checkout.goToShop")}</Link>
           </div>
         </div>
       </div>
@@ -250,7 +249,8 @@ export default function Checkout() {
       completedOrder.id,
       completedOrder.customer,
       completedOrder.items,
-      completedOrder.total
+      completedOrder.total,
+      t
     );
 
     return (
@@ -262,14 +262,14 @@ export default function Checkout() {
                 ✓
               </div>
               <h1 className="checkoutTitle">
-                تم استلام طلبك بنجاح
+                {t("checkout.successTitle")}
               </h1>
               <p className="checkoutSubtitle">
-                شكراً لثقتك بعيادة Maye Clinic. رقم الطلب الخاص بك:
+                {t("checkout.successSubtitle")}
               </p>
               <div className="checkoutOrderId">{completedOrder.id}</div>
               <p className="checkoutSubtitle checkoutSubtitle--spaced">
-                يمكنك إرسال تفاصيل الطلب عبر واتساب للمتابعة السريعة.
+                {t("checkout.successWhatsAppHint")}
               </p>
               <a
                 className="checkoutWa"
@@ -277,11 +277,11 @@ export default function Checkout() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                إرسال الطلب عبر واتساب
+                {t("checkout.sendWhatsApp")}
               </a>
               <div>
                 <Link className="checkoutBackLink" to="/shop">
-                  العودة إلى المتجر
+                  {t("checkout.backToShop")}
                 </Link>
               </div>
             </div>
@@ -296,22 +296,22 @@ export default function Checkout() {
       <div className="checkoutInner">
         <header className="checkoutHeader">
           <p className="checkoutEyebrow">Maye Clinic</p>
-          <h1 className="checkoutTitle">إتمام الطلب</h1>
+          <h1 className="checkoutTitle">{t("checkout.title")}</h1>
           <p className="checkoutSubtitle">
-            راجعي ملخص الطلب ثم أدخلي بيانات التوصيل لإتمام الشراء.
+            {t("checkout.subtitle")}
           </p>
         </header>
 
         <section className="checkoutCard" aria-labelledby="summary-title">
           <h2 id="summary-title" className="checkoutCardTitle">
-            ملخص الطلب
+            {t("checkout.summary")}
           </h2>
           {lines.map((line, idx) => (
             <div key={`${line.id}-${idx}`} className="checkoutLine">
               <div>
                 <div>{line.name}</div>
                 <div className="checkoutLineMeta">
-                  الفئة: {typeLabel(line.type)} • الكمية: {line.quantity}
+                  {t("checkout.category")}: {typeLabel(line.type, t)} • {t("checkout.quantity")}: {line.quantity}
                 </div>
               </div>
               <div className="checkoutLinePrice">{line.lineSubtotal} ₪</div>
@@ -319,18 +319,18 @@ export default function Checkout() {
           ))}
           <div className="checkoutTotals">
             <div className="checkoutSubRow">
-              <span>المجموع الفرعي</span>
+              <span>{t("checkout.subtotal")}</span>
               <span>{subtotal} ₪</span>
             </div>
             <div className="checkoutTotalRow">
-              <span>الإجمالي</span>
+              <span>{t("checkout.total")}</span>
               <span>{total} ₪</span>
             </div>
           </div>
         </section>
 
         <form className="checkoutCard" onSubmit={handleSubmit} noValidate>
-          <h2 className="checkoutCardTitle">بيانات العميل</h2>
+          <h2 className="checkoutCardTitle">{t("checkout.customerDetails")}</h2>
 
           {submitError && (
             <div className="checkoutSubmitErr" role="alert">
@@ -340,7 +340,7 @@ export default function Checkout() {
 
           <div className="checkoutField">
             <label htmlFor="co-fullName">
-              الاسم الكامل<span className="req">*</span>
+              {t("checkout.fullName")}<span className="req">*</span>
             </label>
             <input
               id="co-fullName"
@@ -357,14 +357,14 @@ export default function Checkout() {
 
           <div className="checkoutField">
             <label htmlFor="co-phone">
-              رقم الهاتف<span className="req">*</span>
+              {t("checkout.phone")}<span className="req">*</span>
             </label>
             <input
               id="co-phone"
               type="tel"
               inputMode="tel"
               autoComplete="tel"
-              placeholder="مثال: 0501234567"
+              placeholder={t("checkout.phonePlaceholder")}
               value={form.phone}
               onChange={(e) => update("phone", e.target.value)}
               aria-invalid={!!errors.phone}
@@ -376,7 +376,7 @@ export default function Checkout() {
 
           <div className="checkoutField">
             <label htmlFor="co-city">
-              المدينة<span className="req">*</span>
+              {t("checkout.city")}<span className="req">*</span>
             </label>
             <input
               id="co-city"
@@ -393,7 +393,7 @@ export default function Checkout() {
 
           <div className="checkoutField">
             <label htmlFor="co-address">
-              العنوان<span className="req">*</span>
+              {t("checkout.address")}<span className="req">*</span>
             </label>
             <input
               id="co-address"
@@ -409,11 +409,11 @@ export default function Checkout() {
           </div>
 
           <div className="checkoutField">
-            <label htmlFor="co-notes">ملاحظات (اختياري)</label>
+            <label htmlFor="co-notes">{t("checkout.notesOptional")}</label>
             <textarea
               id="co-notes"
               rows={3}
-              placeholder="تعليمات التوصيل أو أي ملاحظة…"
+              placeholder={t("checkout.notesPlaceholder")}
               value={form.notes}
               onChange={(e) => update("notes", e.target.value)}
             />
@@ -424,7 +424,7 @@ export default function Checkout() {
             className="checkoutSubmit"
             disabled={submitting}
           >
-            {submitting ? "جاري الإرسال…" : "تأكيد الطلب"}
+            {submitting ? t("checkout.submitting") : t("checkout.submit")}
           </button>
         </form>
       </div>

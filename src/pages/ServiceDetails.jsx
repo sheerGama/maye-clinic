@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getServices, PLACEHOLDER_IMAGE } from "../lib/catalogApi.js";
 import "./detailPages.css";
+import { useLanguage } from "../i18n/LanguageContext";
 
 const STORAGE_SKIN = "skin-items";
 const STORAGE_LASER = "laser-items";
@@ -54,13 +55,13 @@ function loadJsonServices(key) {
   }
 }
 
-function categoryTitle(cat) {
-  if (cat === "skin") return "جلسات العناية بالبشرة";
-  if (cat === "laser") return "جلسات الليزر";
+function categoryTitle(cat, t) {
+  if (cat === "skin") return t("serviceDetails.skinCategory");
+  if (cat === "laser") return t("serviceDetails.laserCategory");
   return cat || "—";
 }
 
-function addToCart(item) {
+function addToCart(item, t) {
   const cart = JSON.parse(localStorage.getItem("cart-items")) || [];
   cart.push({
     id: item.id,
@@ -70,10 +71,11 @@ function addToCart(item) {
     type: "service",
   });
   localStorage.setItem("cart-items", JSON.stringify(cart));
-  alert("تمت الإضافة إلى السلة 🛒");
+  alert(t("serviceDetails.addedToCart"));
 }
 
 export default function ServiceDetails() {
+  const { t } = useLanguage();
   const { id } = useParams();
   const [skin, setSkin] = useState([]);
   const [laser, setLaser] = useState([]);
@@ -142,9 +144,9 @@ export default function ServiceDetails() {
 
   if (loading) {
     return (
-      <div className="mc-page serviceDetailPage" dir="rtl">
+      <div className="mc-page serviceDetailPage">
         <p className="mc-loading mc-loading--inline" role="status">
-          جاري تحميل الخدمات…
+          {t("serviceDetails.loading")}
         </p>
       </div>
     );
@@ -153,9 +155,10 @@ export default function ServiceDetails() {
   if (id === "skin") {
     return (
       <CategorySection
-        title="جلسات العناية بالبشرة"
+        title={t("serviceDetails.skinCategory")}
         items={skin}
         showFetchError={showFetchError}
+        t={t}
       />
     );
   }
@@ -163,9 +166,10 @@ export default function ServiceDetails() {
   if (id === "laser") {
     return (
       <CategorySection
-        title="جلسات الليزر"
+        title={t("serviceDetails.laserCategory")}
         items={laser}
         showFetchError={showFetchError}
+        t={t}
       />
     );
   }
@@ -174,14 +178,12 @@ export default function ServiceDetails() {
 
   if (!service) {
     return (
-      <div className="mc-page serviceDetailPage" dir="rtl">
+      <div className="mc-page serviceDetailPage">
         <div className="serviceNotFound">
-          <h1 className="mc-page-title">الخدمة غير موجودة</h1>
-          <p className="mc-muted">
-            لم يتم العثور على هذه الخدمة. قد تكون غير متوفرة أو تمت إزالتها.
-          </p>
+          <h1 className="mc-page-title">{t("serviceDetails.notFoundTitle")}</h1>
+          <p className="mc-muted">{t("serviceDetails.notFoundDesc")}</p>
           <Link to="/services" className="detailStub-back">
-            العودة إلى الخدمات
+            {t("serviceDetails.backToServices")}
           </Link>
         </div>
       </div>
@@ -189,7 +191,7 @@ export default function ServiceDetails() {
   }
 
   return (
-    <div className="mc-page serviceDetailPage" dir="rtl">
+    <div className="mc-page serviceDetailPage">
       <div className="serviceDetailCard">
         <div className="serviceDetailHero">
           <img
@@ -199,7 +201,7 @@ export default function ServiceDetails() {
           />
         </div>
         <span className="serviceCategoryPill">
-          {categoryTitle(service.category)}
+          {categoryTitle(service.category, t)}
         </span>
         <h1 className="mc-section-title serviceDetailTitle">{service.name}</h1>
         <p className="serviceDetailDesc">{service.desc}</p>
@@ -209,18 +211,18 @@ export default function ServiceDetails() {
           <button
             type="button"
             className="mc-btn mc-btn-primary mc-btn-block"
-            onClick={() => addToCart(service)}
+            onClick={() => addToCart(service, t)}
           >
-            أضيفي إلى السلة
+            {t("serviceDetails.addToCart")}
           </button>
           <Link
             to="/booking"
             className="mc-btn mc-btn-outline mc-btn-block serviceDetailLinkBtn"
           >
-            احجزي الآن
+            {t("serviceDetails.bookNow")}
           </Link>
           <Link to="/services" className="serviceBackLink">
-            ← العودة إلى قائمة الخدمات
+            ← {t("serviceDetails.backToServices")}
           </Link>
         </div>
       </div>
@@ -228,21 +230,20 @@ export default function ServiceDetails() {
   );
 }
 
-function CategorySection({ title, items, showFetchError }) {
+function CategorySection({ title, items, showFetchError, t }) {
   return (
-    <div className="mc-page serviceDetailPage" dir="rtl">
+    <div className="mc-page serviceDetailPage">
       <h1 className="mc-page-title">{title}</h1>
 
       {showFetchError && (
         <div className="mc-alert mc-alert--error" role="alert">
-          تعذر تحميل الخدمات من السيرفر، ولا توجد بيانات محفوظة محلياً. تحقق من
-          الاتصال أو أضيفي الخدمات من لوحة التحكم.
+          {t("serviceDetails.fetchError")}
         </div>
       )}
 
       {!showFetchError && items.length === 0 && (
         <p className="mc-muted serviceEmptyMsg">
-          لا توجد خدمات في هذا القسم حالياً.
+          {t("serviceDetails.sectionEmpty")}
         </p>
       )}
 
@@ -264,15 +265,15 @@ function CategorySection({ title, items, showFetchError }) {
                 <button
                   type="button"
                   className="mc-btn mc-btn-primary mc-btn-block"
-                  onClick={() => addToCart(item)}
+                  onClick={() => addToCart(item, t)}
                 >
-                  أضيفي إلى السلة
+                  {t("serviceDetails.addToCart")}
                 </button>
                 <Link
                   to="/booking"
                   className="mc-btn mc-btn-outline mc-btn-block serviceDetailLinkBtn"
                 >
-                  احجزي الآن
+                  {t("serviceDetails.bookNow")}
                 </Link>
               </div>
             </article>
@@ -282,7 +283,7 @@ function CategorySection({ title, items, showFetchError }) {
 
       <p className="serviceBackWrap">
         <Link to="/services" className="serviceBackLink">
-          ← العودة إلى جميع الخدمات
+          ← {t("serviceDetails.backToAll")}
         </Link>
       </p>
     </div>

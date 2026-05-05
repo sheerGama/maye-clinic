@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./adminLogin.css";
+import { useLanguage } from "../i18n/LanguageContext";
 
 /**
  * DEMO-ONLY admin login. Credentials are hardcoded for class / prototype.
@@ -12,6 +13,7 @@ const DEMO_PASS = "123456";
 const AUTH_KEY = "admin-auth";
 
 export default function AdminLogin() {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -34,7 +36,7 @@ export default function AdminLogin() {
       sessionStorage.setItem(AUTH_KEY, "true");
       navigate("/admin", { replace: true });
     } else {
-      setError("بيانات الدخول غير صحيحة. تحقق من اسم المستخدم وكلمة المرور.");
+      setError(t("adminLogin.invalid"));
     }
   };
 
@@ -43,8 +45,8 @@ export default function AdminLogin() {
       <div className="adminLoginInner">
         <header className="adminLoginHeader">
           <p className="adminLoginEyebrow">Maye Clinic</p>
-          <h1 className="adminLoginTitle">تسجيل دخول المشرف</h1>
-          <p className="adminLoginSub">الوصول إلى لوحة التحكم</p>
+          <h1 className="adminLoginTitle">{t("adminLogin.title")}</h1>
+          <p className="adminLoginSub">{t("adminLogin.subtitle")}</p>
         </header>
 
         <form className="adminLoginCard" onSubmit={handleSubmit} noValidate>
@@ -55,7 +57,7 @@ export default function AdminLogin() {
           )}
 
           <div className="adminLoginField">
-            <label htmlFor="admin-user">اسم المستخدم</label>
+            <label htmlFor="admin-user">{t("adminLogin.username")}</label>
             <input
               id="admin-user"
               type="text"
@@ -66,7 +68,7 @@ export default function AdminLogin() {
           </div>
 
           <div className="adminLoginField">
-            <label htmlFor="admin-pass">كلمة المرور</label>
+            <label htmlFor="admin-pass">{t("adminLogin.password")}</label>
             <input
               id="admin-pass"
               type="password"
@@ -77,12 +79,11 @@ export default function AdminLogin() {
           </div>
 
           <button type="submit" className="adminLoginBtn">
-            تسجيل الدخول
+            {t("adminLogin.submit")}
           </button>
 
           <p className="adminLoginHint">
-            نظام تجريبي للمشروع الدراسي فقط — استبدل بمصادقة آمنة (مثل Supabase
-            Auth) في الإنتاج.
+            {t("adminLogin.hint")}
           </p>
         </form>
       </div>
